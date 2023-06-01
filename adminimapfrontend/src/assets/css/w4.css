@@ -1,0 +1,647 @@
+/*
+* w4.css
+* Copyright 2023, Nikita Komarov
+* Free to use under the MIT license.
+* 02/04/2023
+*/
+
+
+/* Table of contents
+––––––––––––––––––––––––––––––––––––––––––––––––––
+- Colors
+- Base Styles
+- Typography
+- Layout
+- Components
+- Buttons
+- Forms
+- Tables
+- Media Queries
+*/
+
+
+/* Colors
+–––––––––––––––––––––––––––––––––––––––––––––––––– */
+
+:root {
+  --dark-cyan: #2b6777;
+  --dark-cyan-hover: #39798a;
+  /* --light-gray-blue: #c8d8e4; */
+  --light-gray-blue: #BACAD7;;
+  --white: #ffffff;
+  --black: #000000;
+  --light-gray: #f2f2f2;
+  --cyan: #52ab98;
+
+  --link: #2b6777;
+  --link-hover: #52ab98;
+  --icon: #1b657e;
+  --border: #39798a;
+  --border-light: #4e606e;
+  --code: #98bad4;
+}
+
+.w4-theme {
+  background: var(--dark-cyan);
+  color: var(--white);
+}
+
+.w4-theme-cyan {
+  background: var(--cyan);
+  color: var(--white);
+}
+
+.w4-theme-gray {
+  background: var(--light-gray-blue);
+  color: var(--white);
+}
+
+.w4-theme-text {
+  background: var(--white);
+  color: var(--black);
+}
+
+
+/* Base Styles
+–––––––––––––––––––––––––––––––––––––––––––––––––– */
+
+html,
+body {
+	height: 100%;
+	width: 100%;
+	margin: 0;
+	padding: 0;
+  font-family: "Montserrat", Arial, sans-serif;
+  font-weight: 400;
+	line-height: 1.5;
+  font-size: 16px;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--light-gray); 
+}
+ 
+::-webkit-scrollbar-thumb {
+  background: var(--dark-cyan);
+  border-radius: 1px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--cyan); 
+}
+
+
+/* Typography
+–––––––––––––––––––––––––––––––––––––––––––––––––– */
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+	margin: 5px 0;
+	line-height: 1.5;
+  font-weight: 600;
+}
+
+h1 {
+	font-size: 24px;
+}
+
+h2 {
+	font-size: 18px;
+}
+
+h3 {
+	font-size: 15px;
+}
+
+h4 {
+	font-size: 14px;
+}
+
+h5 {
+	font-size: 16px;
+}
+
+h6 {
+	font-size: 16px;
+}
+
+.w4-link {
+  font-weight: bold;
+  text-decoration: underline;
+  cursor: pointer;
+  color: var(--dark-cyan)
+}
+
+.w4-link:hover {
+  color: var(--dark-cyan-hover)
+}
+
+
+/* Layout
+–––––––––––––––––––––––––––––––––––––––––––––––––– */
+
+.w4-flex {
+  display: flex;
+  align-items: center;
+}
+
+.w4-flex-wrap {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.w4-flex-column {
+  display: flex;
+  flex-direction: column;
+}
+
+.w4-container {
+  padding: 8px 16px;
+}
+
+.w4-margin-top {
+  margin-top: 16px;
+}
+
+.w4-margin-bottom {
+  margin-bottom: 16px;
+}
+
+
+/* Components
+–––––––––––––––––––––––––––––––––––––––––––––––––– */
+
+.w4-header {
+  width: 100%;
+  box-shadow: 0 1px 2px rgb(60 64 67 / 30%);
+  z-index: 3;
+}
+
+.w4-logo {
+  color:inherit;
+  background-color:inherit;
+}
+
+.w4-main {
+  height: 100%;
+  width: 100%;
+  position: relative;
+}
+
+.w4-navbar {
+  width: 600px;
+  height: 100%;
+  justify-content: space-between;
+}
+
+.w4-tab-container {
+  display: flex;
+  height: 100%;
+}
+
+.w4-section {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  box-shadow: 0 1px 2px rgb(60 64 67 / 30%), 0 2px 6px 2px rgb(60 64 67 / 15%);
+}
+
+.w4-section--search {
+  left: 0;
+  z-index: 2;
+  width: 600px;
+}
+
+.w4-section--note {
+  left: 0;
+  z-index: 1;
+  width: 600px;
+}
+
+.w4-section--map {
+  left: 600px;
+  z-index: 1;
+  overflow-y: hidden;
+  width: calc(100% - 600px);
+  text-align: center;
+  font-size: 40px;
+}
+
+.w4-widget {
+  height: 100%;
+}
+
+.w4-widget__head {
+  width: 100%;
+  box-sizing: border-box;
+  box-shadow: 0 2px 2px rgb(60 64 67 / 30%);
+  z-index: 1;
+  position: relative;
+}
+
+.w4-widget__head__input{
+  width: 100%;
+  margin-right: 10px;
+  position:relative;
+}
+
+.w4-widget__modal{
+  position: absolute;
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid var(--dark-cyan);
+  border-radius: 3px;
+}
+
+.w4-widget__modal--input{
+  top: 38px;
+  border-radius: 0px 0px 3px 3px;
+}
+
+.w4-widget__modal--filter{
+  top: 48px;
+}
+
+.w4-widget__head__filter__hr{
+  margin-left: 22px;
+}
+
+.w4-widget__head__filter__result{
+  margin-left: 22px;
+  margin-bottom: 4px; 
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.w4-widget__head__filter__result button {
+	background: none;
+	color: inherit;
+	border: none;
+	padding: 0 5px;
+  cursor: pointer;
+	font: inherit;
+	outline: inherit;
+  text-align: left;
+  width: 100%;
+}
+
+.w4-widget__head__button{
+  min-width: 30px;
+  /* height: 30px; */
+}
+
+.w4-widget__body {
+  height: 100%;
+  overflow: auto;
+}
+
+.w4-tag {
+  display: flex;
+  padding: 4px 8px 4px 16px;
+  border-radius: 3px;
+  margin-right: 8px;
+  margin-bottom: 8px;
+}
+
+.w4-tag-text {
+  font-size: 14px;
+  white-space: nowrap;
+  margin-right: 8px;
+}
+
+.w4-search-result{
+  margin-bottom: 10px;
+  cursor: pointer;
+}
+
+.w4-search-result-container{
+  padding: 0px 20px;
+}
+
+.w4-search-result__user{
+  margin-right: 25px;
+}
+
+.w4-search-result__date{
+  color: var(--light-gray-blue);
+}
+
+.w4-dot {
+  min-height: 10px;
+  min-width: 10px;
+  background-color: var(--dark-cyan);
+  border-radius: 50%;
+  display: inline-block;
+  margin-right: 10px;
+}
+
+.w4-blog {
+  line-height: 1.6;
+}
+
+.w4-blog a {
+  color: var(--link);
+}
+
+.w4-blog a:hover {
+  color: var(--link-hover);
+}
+
+.w4-blog pre {
+  border-radius: 4px;
+}
+
+.w4-blog img {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 100%;
+}
+
+.w4-blog code {
+  background-color: var(--code);
+  border-radius: 4px;
+}
+
+.w4-blog details {
+  background: #f8fbff;
+  border-radius: 4px;
+  box-sizing: border-box;
+  padding: 8px 16px;
+  margin: 5px 0;
+  border: 1px solid var(--border);
+}
+
+.w4-blog details>summary {
+  color: var(--border);
+  font-size: 1.1rem;
+  cursor: pointer;
+  text-decoration: underline;
+  -webkit-text-decoration-style: dotted;
+  text-decoration-style: dotted;
+}
+
+.w4-marker-popup {
+  font-size: 14px;
+  padding: 10px;
+  background: var(--white);
+  border-radius: 6px;
+}
+
+
+/* Buttons
+–––––––––––––––––––––––––––––––––––––––––––––––––– */
+
+.w4-button {
+  border:none;
+  padding:4px 8px;
+  display:flex;
+  justify-content: center;
+  vertical-align:middle;
+  overflow:hidden;
+  text-decoration:none;
+  text-align:center;
+  cursor:pointer;
+  white-space:nowrap;
+  align-items: center;
+}
+
+.w4-button-primary {
+  border-radius: 3px;
+  background: var(--dark-cyan);
+  color: var(--white);
+}
+
+.w4-button-primary:hover {
+  background: var(--dark-cyan-hover);
+  box-shadow: 0 1px 2px rgb(60 64 67 / 30%), 0 2px 6px 2px rgb(60 64 67 / 15%);
+}
+
+.w4-button-primary:active {
+  background: var(--white);
+  color: var(--dark-cyan);
+}
+
+.w4-button-primary:active > svg {
+  fill: var(--dark-cyan);
+}
+
+.w4-button-tab {
+  border-radius: 3px 3px 0  0;
+  padding:2px 4px;
+  margin:4px 2px 0 2px;
+}
+
+.w4-button-tab:hover {
+  background: var(--white);
+  color: var(--dark-cyan);
+}
+
+.w4-button-tab:hover > svg {
+  fill: var(--dark-cyan);
+}
+
+.w4-button-tab--active {
+  background: var(--cyan);
+  color: var(--white);
+  border-bottom: 3px solid var(--cyan);
+  margin-bottom: -3px;
+}
+
+.w4-button-tab--inactive {
+  background: var(--light-gray-blue);
+  color: var(--white);
+}
+
+.w4-button-tag-close {
+  padding: 0;
+}
+
+.w4-button-tag-close:hover {
+  background: var(--dark-cyan-hover);
+}
+
+.w4-button-tag-close:active {
+  background: var(--white);
+  color: var(--dark-cyan);
+}
+
+.w4-button-tag-close:active > svg {
+  fill: var(--dark-cyan);
+}
+
+/* Forms
+–––––––––––––––––––––––––––––––––––––––––––––––––– */
+
+.w4-input {
+  font-family: inherit;
+	border: 1px solid var(--dark-cyan);
+	-webkit-border-radius: 4px;
+	-moz-border-radius: 4px;
+	border-radius: 4px;
+	font-size: 18px;
+	line-height: 1;
+  box-sizing: border-box;
+	padding: 8px 16px;
+	width: 100%;
+
+  padding-inline-start: 2.5rem;
+  background-image: url(../files/search_black.svg);
+  background-position: center left 0.5rem;
+  background-size: 1.5rem auto;
+  background-repeat: no-repeat;
+}
+
+.w4-input:focus, input:focus{
+  outline: none;
+  border-radius: 4px 4px 0px 0px;
+}
+
+
+/* Tables
+–––––––––––––––––––––––––––––––––––––––––––––––––– */
+
+tr {
+  break-inside: avoid;
+  break-after: auto;
+}
+
+thead {
+  display: table-header-group;
+}    
+
+table {
+  display: block;
+  width: 100%;
+  overflow: auto;
+  break-inside: auto;
+  text-align: left;
+  padding: 0;
+  word-break: initial;
+  background-color: white;
+  border-collapse: collapse;
+  border-spacing: 0px;
+}
+
+  table tr {
+      margin: 0;
+      padding: 0;
+  }
+
+      table tr:nth-child(2n),
+      thead {
+          background-color: #f8f8f8;
+      }
+
+  table th {
+      background-color: var(--border);
+      color: white;
+      border: 1px solid var(--border-light);
+      margin: 0;
+      padding: 6px 13px;
+  }
+
+  table td {
+      border: 1px solid var(--border-light);
+      margin: 0;
+      padding: 6px 13px;
+  }
+
+      table th:first-child,
+      table td:first-child {
+          margin-top: 0;
+      }
+
+      table th:last-child,
+      table td:last-child {
+          margin-bottom: 0;
+      }
+
+      .santer {
+        width:100%;
+      }
+
+/* Media Queries
+–––––––––––––––––––––––––––––––––––––––––––––––––– */
+
+@media (max-width: 1000px), (max-height: 600px) {
+  .w4-navbar {
+    width: 400px;
+  }
+
+  .w4-section--search {
+    width: 400px;
+  }
+  
+  .w4-section--note {
+    width: 400px;
+  }
+
+  .w4-section--map {
+    left: 400px;
+    width: calc(100% - 400px);
+  }
+}
+
+@media (max-width: 700px) {
+  .w4-navbar {
+    width: 100%;
+  }
+
+  .w4-section--search {
+    width: 100%;
+  }
+  
+  .w4-section--note {
+    width: 100%;
+  }
+
+  .w4-section--map {
+    left: 0px;
+    z-index: 1;
+    width: 100%;
+  }
+
+  #button-tab-map {
+    display: flex!important;
+  }
+}
+
+@media (max-width: 380px) {
+  .w4-logo {
+    padding: 4px 2px;
+    font-size: 12px;
+  }
+
+  .w4-button-tab {
+    font-size: 12px;
+    padding:2px 2px;
+    margin:4px 1px 0 1px;
+  }
+
+  .w4-button-tab > svg {
+    width: 18px;
+    height: 18px;
+  }
+}
+
+@media (max-width: 300px) {
+  .w4-logo {
+    font-size: 10px;
+  }
+
+  .w4-button-tab {
+    font-size: 10px;
+  }
+}
