@@ -41,3 +41,15 @@
 ## Conventions
 
 The `AdminiMapBackend/MarkdownFiles` folder contains test files.
+
+## Roadmap
+
+- [ ] Improve search
+	- [ ] Add search by tags
+	- [ ] Navigating search suggestions using the keyboard
+	- [ ] Improve performance with cache
+- [ ] Add admin panel
+    - [ ] Add authorization
+	- [ ] Add CRUD operations for blog
+	- [ ] Add multi-user support
+- [ ] Add different marker icons
