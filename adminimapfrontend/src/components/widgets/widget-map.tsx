@@ -92,7 +92,7 @@ const WidgetMap: React.FunctionComponent<IProps> = (props) => {
         ))}
         {
           markerOpen &&
-            <Overlay anchor={markerOpen.anchor} offset={[0, 0]}>
+            <Overlay anchor={markerOpen.anchor} offset={[86, -8]}>
               <div className="w4-marker-popup" style={{display: markerOpen.display}}>
                 <div className="w4-link"  onClick={() => handleMarkerOpenedClick(markerOpen.number)}>{markerOpen.title}</div>
                 <div>u/{markerOpen.userName}</div>
