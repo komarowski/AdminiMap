@@ -15,7 +15,7 @@ const WidgetSearch: React.FunctionComponent<IProps> = (props) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [searchQuery, setSearchQuery] = useState(searchParams.get(URLParams.SearchQuery));
   const [searchSugestionQuery, setSearchSugestionQuery] = useSearchDebounce();
-  const searchResult = useFetch<Array<INoteDTO>>(searchQuery && 'api/notes?query=' + searchQuery, [], true);
+  const searchResult = useFetch<Array<INoteDTO>>(['api/notes?query=', searchQuery].join(''), [], true);
   const searchSugestionResult = useFetch<Array<ISuggestionDTO>>(searchSugestionQuery && 'api/search?start=' + searchSugestionQuery, [], true);
 
   const setInputSugestionModalDisplay = (isShow: boolean): void => {
@@ -58,6 +58,7 @@ const WidgetSearch: React.FunctionComponent<IProps> = (props) => {
     if (number.startsWith("u/")) {
       searchParams.set(URLParams.SearchQuery, number); 
       setSearchParams(searchParams);
+      setSearchQuery(number);
     } else {
       searchParams.set(URLParams.TabNumber, Tabs.Note);
       searchParams.set(URLParams.NoteNumber, number); 
@@ -98,6 +99,10 @@ const WidgetSearch: React.FunctionComponent<IProps> = (props) => {
           </div>
         </div>
         <div className="w4-widget__body w4-container w4-theme-text">
+          {
+            searchQuery == null && 
+            <h2 style={{marginBottom: '10px'}}>Last updated</h2>
+          }
           {searchResult.map(note => (
             <div key={note.id} className="w4-search-result" onClick={() => handleSuggestionClick(note.number)}>
               <div className="w4-flex">

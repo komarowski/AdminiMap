@@ -26,13 +26,17 @@ app.MapGet("/", async (HttpContext ctx) =>
 /*
  * Get a list of notes for a search query.
  * The search is performed by note title or 
- * by username (if the query starts with "u/")
+ * by username (if the query starts with "u/").
+ * If search query is null return last updated notes.
  */
 app.MapGet("/api/notes", async (string? query, AdminiMapContext context) =>
 {
   if (string.IsNullOrEmpty(query))
   {
-    return Array.Empty<Note>();
+    return await context.Notes
+    .OrderByDescending(note => note.LastUpdate)
+    .Take(5)
+    .ToArrayAsync();
   }
 
   if (query.StartsWith("u/"))
@@ -44,7 +48,7 @@ app.MapGet("/api/notes", async (string? query, AdminiMapContext context) =>
   }
 
   return await context.Notes
-  .Where(note => note.Title.ToLower().StartsWith(query))
+  .Where(note => note.Title.ToLower().Contains(query))
   .ToArrayAsync();
 });
 
@@ -69,7 +73,7 @@ app.MapGet("/api/note", async (string? number, AdminiMapContext context) =>
 /*
  * Get a list of suggested notes for a search query.
  * The search is performed by note title or 
- * by username (if the query starts with "u/")
+ * by username (if the query starts with "u/").
  */
 app.MapGet("/api/search", async (string? start, AdminiMapContext context) =>
 {
@@ -84,12 +88,15 @@ app.MapGet("/api/search", async (string? start, AdminiMapContext context) =>
     return await context.Notes
     .Select(note => note.UserName)
     .Where(userName => userName.ToLower().StartsWith(userNameStart))
+    .Distinct()
+    .Take(4)
     .Select(userName => new SuggestionDTO() { Number = "u/" + userName, Title = "u/" + userName })
     .ToArrayAsync();
   }
 
   return await context.Notes
-  .Where(note => note.Title.ToLower().StartsWith(start))
+  .Where(note => note.Title.ToLower().Contains(start))
+  .Take(4)
   .Select(note => new SuggestionDTO() { Number = note.Number, Title = note.Title })
   .ToArrayAsync();
 });
