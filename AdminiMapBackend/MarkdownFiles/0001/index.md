@@ -1,6 +1,7 @@
 ---
 title: Medeu - Sports complex
 username: nikkom
+tags: 3
 latitude: 43.157171175100935
 longitude: 77.05939378694426
 ---

@@ -29,28 +29,36 @@ app.MapGet("/", async (HttpContext ctx) =>
  * by username (if the query starts with "u/").
  * If search query is null return last updated notes.
  */
-app.MapGet("/api/notes", async (string? query, AdminiMapContext context) =>
+app.MapGet("/api/notes", async (string? query, int? tags, AdminiMapContext context) =>
 {
+  IQueryable<Note> contextQuery = context.Notes.AsQueryable();
+  if (tags is not null && tags > 0)
+  {
+    contextQuery = contextQuery
+    .Where(note => (note.Tags & tags) == tags);
+  }
+
   if (string.IsNullOrEmpty(query))
   {
-    return await context.Notes
+    return await contextQuery
     .OrderByDescending(note => note.LastUpdate)
     .Take(5)
     .ToArrayAsync();
   }
-
+  
   if (query.StartsWith("u/"))
   {
     var userNameQuery = query[2..];
-    return await context.Notes
+    return await contextQuery
     .Where(note => note.UserName.ToLower().StartsWith(userNameQuery))
     .ToArrayAsync();
   }
 
-  return await context.Notes
+  return await contextQuery
   .Where(note => note.Title.ToLower().Contains(query))
   .ToArrayAsync();
 });
+
 
 /*
  * Get a note by its number.

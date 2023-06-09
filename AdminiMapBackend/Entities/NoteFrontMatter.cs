@@ -13,6 +13,9 @@ namespace AdminiMapBackend.Entities
     [YamlMember(Alias = "username")]
     public string UserName { get; set; }
 
+    [YamlMember(Alias = "tags")]
+    public int Tags { get; set; }
+
     [YamlMember(Alias = "latitude")]
     public double Latitude { get; set; }
 

@@ -1,6 +1,7 @@
 ---
 title: Kok Tobe - Tourist attraction
 username: nikkom
+tags: 12
 latitude: 43.23378770722032
 longitude: 76.97539792869954
 ---

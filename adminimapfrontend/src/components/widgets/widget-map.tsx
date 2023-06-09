@@ -3,23 +3,9 @@ import { useState } from 'react';
 import { Map, Marker, Overlay } from 'pigeon-maps'
 import { useLocalStorage, useFetch } from '../../customHooks';
 import { useSearchParams } from "react-router-dom";
-import { Tabs, URLParams } from '../../routerParams';
-import { IMarkerDTO } from '../../typesDTO';
+import { Tabs, URLParams } from '../../constants';
+import { IMarkerDTO, IMarkerOverlay, IMapArgs } from '../../types';
 
-
-interface IMarkerOverlay {
-  anchor: [number, number];
-  number: string;
-  title: string;
-  userName: string;
-  display: string;
-}
-
-interface IMapArgs {
-  event: any;
-  anchor: any;
-  payload: any;
-}
 
 interface IProps {
   zIndex: string;

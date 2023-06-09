@@ -4,7 +4,7 @@ import { useSearchParams } from "react-router-dom";
 import WidgetSearch from "../widgets/widget-search";
 import WidgetNote from "../widgets/widget-note";
 import WidgetMap from "../widgets/widget-map";
-import { Tabs, URLParams } from '../../routerParams';
+import { Tabs, URLParams } from '../../constants';
 
 
 const HomePage: React.FunctionComponent = () => {

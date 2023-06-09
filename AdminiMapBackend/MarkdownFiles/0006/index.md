@@ -1,6 +1,7 @@
 ---
 title: Charyn Canyon Valley of castles
 username: nikkom
+tags: 14
 latitude: 43.352473940300285
 longitude: 79.06927311742784
 ---
