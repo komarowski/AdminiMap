@@ -7,3 +7,10 @@ export const convertStringToInt = (text: string | null, defaultValue: number): n
   }
   return defaultValue;
 }
+
+export function getDefaultIfNull<T>(value: T | null, defaultValue: T): T {
+  if (value) {
+    return value;   
+  }
+  return defaultValue;
+}

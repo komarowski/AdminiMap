@@ -6,20 +6,36 @@ import { useSearchParams } from "react-router-dom";
 import { Tabs, URLParams } from '../../constants';
 import { IMarkerDTO, IMarkerOverlay, IMapArgs } from '../../types';
 
+interface IMapState {
+  zoom: number;
+  long: number;
+  lat: number;
+}
 
 interface IProps {
   zIndex: string;
 }
 
+const useMarkersRequest = (mapState: IMapState, query: string | null, tagSum: string | null): Array<IMarkerDTO> => {
+  let request = `api/markers?zoom=${mapState.zoom}&lon=${mapState.long}&lat=${mapState.lat}`;
+  if (query){
+    request += '&query=' + query;
+  }
+  if (tagSum) {
+    request += '&tags=' + tagSum;
+  }
+  return useFetch<Array<IMarkerDTO>>(request, [], true);
+};
+
 const WidgetMap: React.FunctionComponent<IProps> = (props) => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const [mapState, setMapState] = useLocalStorage("mapstate", 
+  const [mapState, setMapState] = useLocalStorage<IMapState>("mapstate", 
   { 
     'zoom': 15, 
     'long': 76.9184966987745, 
     'lat': 43.24979821566148
   });
-  const markers = useFetch<Array<IMarkerDTO>>(`api/markers?zoom=${mapState.zoom}&lon=${mapState.long}&lat=${mapState.lat}`, [], true);
+  const markers = useMarkersRequest(mapState, searchParams.get(URLParams.SearchQuery), searchParams.get(URLParams.TagSum));
   const [markerOpen, setMarkerOpen] = useState<IMarkerOverlay | undefined>(undefined);
 
   const handleMarkerClick = (marker: IMarkerDTO, args: IMapArgs) => {
@@ -72,7 +88,7 @@ const WidgetMap: React.FunctionComponent<IProps> = (props) => {
             key={marker.number}
             width={50}
             anchor={[marker.latitude, marker.longitude]} 
-            color={"#2b6777"} 
+            color={searchParams.get(URLParams.NoteNumber) === marker.number ? "#52ab98" : "#2b6777"}  
             onClick={(args) => handleMarkerClick(marker, args)}
           />
         ))}

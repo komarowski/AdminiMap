@@ -21,7 +21,9 @@ export function useFetch<T>(url: string | null, initialState: T, isJson: boolean
         }
       })
       .catch(error => console.log(error));
-    }   
+    } else {
+      setResult(initialState);
+    } 
     return () => {
       ignore = true;
     };
@@ -29,14 +31,16 @@ export function useFetch<T>(url: string | null, initialState: T, isJson: boolean
   return result;
 };
 
+
 /**
  * Hook to set a delay time until a user stops typing to change state.
+ * @param defaultValue default value.
  * @param delay delay in milliseconds.
  * @returns useState('') hook with debouncing.
  */
-export function useSearchDebounce(delay = 350): [string, React.Dispatch<React.SetStateAction<string>>] {
-  const [search, setSearch] = useState('');
-  const [searchQuery, setSearchQuery] = useState('');
+export function useSearchDebounce(defaultValue: string, delay = 350): [string, React.Dispatch<React.SetStateAction<string>>] {
+  const [search, setSearch] = useState(defaultValue);
+  const [searchQuery, setSearchQuery] = useState(defaultValue);
 
   useEffect(() => {
     const timeoutID = setTimeout(() => setSearch(searchQuery), delay);
@@ -64,8 +68,8 @@ function getStorageValue(key: string, defaultValue: any): any {
  * @param defaultValue default value.
  * @returns useState hook.
  */
-export const useLocalStorage = (key: string, defaultValue: any): [any, React.Dispatch<any>] => {
-  const [value, setValue] = useState(() => {
+export function useLocalStorage<T>(key: string, defaultValue: T): [T, React.Dispatch<React.SetStateAction<T>>]{
+  const [value, setValue] = useState<T>(() => {
     return getStorageValue(key, defaultValue);
   });
 

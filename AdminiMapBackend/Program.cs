@@ -97,6 +97,7 @@ app.MapGet("/api/search", async (string? start, AdminiMapContext context) =>
     .Select(note => note.UserName)
     .Where(userName => userName.ToLower().StartsWith(userNameStart))
     .Distinct()
+
     .Take(4)
     .Select(userName => new SuggestionDTO() { Number = "u/" + userName, Title = "u/" + userName })
     .ToArrayAsync();
@@ -112,13 +113,40 @@ app.MapGet("/api/search", async (string? start, AdminiMapContext context) =>
 /*
  * Get a list of markers for the current state of the map.
  */
-app.MapGet("/api/markers", async (double zoom, double lon, double lat, AdminiMapContext context) => {
-  double delta = 0.0015 * Math.Pow(2, 19 - zoom);
-  double latTop = Math.Min(lat + delta, 90.0);
-  double latBottom = Math.Max(lat - delta, -90.0);
-  double longLeft = Math.Max(lon - delta, -180.0);
-  double longRight = Math.Min(lon + delta, 180.0);
-  return await context.Notes
+app.MapGet("/api/markers", async (string? query, int? tags, double? zoom, double? lon, double? lat, AdminiMapContext context) => {
+  if (zoom is null || lon is null || lat is null)
+  {
+    return Array.Empty<NoteMarkerDTO>();
+  }
+
+  IQueryable<Note> contextQuery = context.Notes.AsQueryable();
+  if (tags is not null && tags > 0)
+  {
+    contextQuery = contextQuery
+    .Where(note => (note.Tags & tags) == tags);
+  }
+
+  if (!string.IsNullOrEmpty(query))
+  {
+    if (query.StartsWith("u/"))
+    {
+      var userNameQuery = query[2..];
+      contextQuery = contextQuery
+      .Where(note => note.UserName.ToLower().StartsWith(userNameQuery));
+    } 
+    else
+    {
+      contextQuery = contextQuery
+      .Where(note => note.Title.ToLower().Contains(query));
+    }
+  }
+
+  double delta = 0.0015 * Math.Pow(2, 19 - zoom.Value);
+  double latTop = Math.Min(lat.Value + delta, 90.0);
+  double latBottom = Math.Max(lat.Value - delta, -90.0);
+  double longLeft = Math.Max(lon.Value - delta, -180.0);
+  double longRight = Math.Min(lon.Value + delta, 180.0);
+  return await contextQuery
   .Where(note => note.Latitude >= latBottom & note.Latitude <= latTop && note.Longitude >= longLeft && note.Longitude <= longRight)
   .Select(note => new NoteMarkerDTO(note))
   .ToArrayAsync();

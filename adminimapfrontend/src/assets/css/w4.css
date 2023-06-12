@@ -240,6 +240,16 @@ h6 {
   font-size: 40px;
 }
 
+.w4-modal-background {
+  display: none;
+  position: fixed;
+  z-index: 9;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+}
+
 .w4-widget {
   height: 100%;
 }
@@ -493,6 +503,10 @@ h6 {
 .w4-button-tab--inactive {
   background: var(--light-gray-blue);
   color: var(--white);
+}
+
+.w4-button-tag {
+  cursor: pointer;
 }
 
 .w4-button-tag-close {

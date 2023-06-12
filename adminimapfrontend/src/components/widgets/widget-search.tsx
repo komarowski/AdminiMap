@@ -4,42 +4,35 @@ import { useSearchParams } from "react-router-dom";
 import { useFetch, useSearchDebounce } from '../../customHooks';
 import { Tabs, URLParams } from '../../constants';
 import { ITag, ISuggestionDTO, INoteDTO } from '../../types';
-import TagList from '../lists/tag-list';
+import TagListSelected from '../lists/tag-selected-list';
 import NoteList from '../lists/note-list';
 import SuggestionList from '../lists/suggestion-list';
 import { TagArray } from '../../constants';
-import { convertStringToInt } from '../../utils';
+import { convertStringToInt, getDefaultIfNull } from '../../utils';
+import TagListUnselected from '../lists/tag-unselected-list';
 
 
 interface IProps {
   zIndex: string;
 }
 
-const useSearchRequest = (searchQuery: string | null, searchTags: number): Array<INoteDTO> => {
+const useSearchRequest = (searchQuery: string | null, tagSum: number): Array<INoteDTO> => {
   let request = 'api/notes?query=';
   if (searchQuery){
     request += searchQuery;
   }
-  if (searchTags !== 0) {
-    request += '&tags=' + searchTags;
+  if (tagSum !== 0) {
+    request += '&tags=' + tagSum;
   }
   return useFetch<Array<INoteDTO>>(request, [], true);
 };
 
 const useSuggestionRequest = (suggestionQuery: string): Array<ISuggestionDTO> => {
-  // let requset: string | null;
-  // if (suggestionQuery && !suggestionQuery.startsWith("t/")){
-  //   requset = 'api/search?start=' + suggestionQuery;
-  // } else {
-  //   requset = null;
-  // }
-  const request = (!suggestionQuery || suggestionQuery.startsWith("t/")) 
-    ? null 
-    : 'api/search?start=' + suggestionQuery;
-  return useFetch<Array<ISuggestionDTO>>(request, [], true);
+  const request = suggestionQuery ? 'api/search?start=' + suggestionQuery : null;
+  return useFetch<Array<ISuggestionDTO>>(request, [{title: "Start with \"u/\" to search by user", number: "u/"}], true);
 };
 
-const getTagsSelected = (tagsNumber: number): Array<ITag> => {
+const getSelectedTags = (tagsNumber: number): Array<ITag> => {
   let result: Array<ITag> = [];
   TagArray.forEach(tag => {
     if ((tagsNumber & tag.number) === tag.number) {
@@ -49,11 +42,11 @@ const getTagsSelected = (tagsNumber: number): Array<ITag> => {
   return result;
 };
 
-const getTagsUnselected = (tagsNumber: number): Array<ISuggestionDTO> => {
-  let result: Array<ISuggestionDTO> = TagArray.map(tag => ({ number: 't/' + tag.number, title: tag.title}));
+const getUnselectedTags = (tagsNumber: number): Array<ITag> => {
+  let result: Array<ITag> = TagArray.map(tag => tag);
   TagArray.forEach(tag => {
     if ((tagsNumber & tag.number) === tag.number) {
-      result = result.filter(item => item.number !== ('t/' + tag.number));
+      result = result.filter(item => item.number !== tag.number);
     }
   });
   return result;
@@ -61,19 +54,22 @@ const getTagsUnselected = (tagsNumber: number): Array<ISuggestionDTO> => {
 
 
 const WidgetSearch: React.FunctionComponent<IProps> = (props) => {
+  const suggestionInput = React.useRef<HTMLInputElement>(null);
   const suggestionModal = React.useRef<HTMLDivElement>(null);
   const [searchParams, setSearchParams] = useSearchParams();
-  const [searchQuery, setSearchQuery] = useState(searchParams.get(URLParams.SearchQuery));
 
+  const defaultQuery = getDefaultIfNull<string>(searchParams.get(URLParams.SearchQuery), '');
+  const [searchQuery, setSearchQuery] = useState(defaultQuery);
+  const [suggestionQuery, setSuggestionQuery] = useSearchDebounce(defaultQuery);
+  
   const [tagSum, setTagSum] = useState(convertStringToInt(searchParams.get(URLParams.TagSum), 0));
-  const [tagArraySelected, setTagArraySelected] = useState<Array<ITag>>(getTagsSelected(tagSum));
-  const [tagArrayUnselected, setTagArrayUnselected] = useState<Array<ISuggestionDTO>>(getTagsUnselected(tagSum));
-  const [suggestionQuery, setSuggestionQuery] = useSearchDebounce();
-
+  const [tagArraySelected, setTagArraySelected] = useState<Array<ITag>>(getSelectedTags(tagSum));
+  const [tagArrayUnselected, setTagArrayUnselected] = useState<Array<ITag>>(getUnselectedTags(tagSum));
+  
   const searchResult = useSearchRequest(searchQuery, tagSum);
-  // TODO: not call when searchSugestionQuery start with "t/"
-  //const searchSugestionResult = useFetch<Array<ISuggestionDTO>>(suggestionQuery && 'api/search?start=' + suggestionQuery, [], true);
   const searchSugestionResult = useSuggestionRequest(suggestionQuery);
+
+  const [showFilterModal, setShowFilterModal] = useState('none');
 
   const displaySuggestionModal = (isShow: boolean): void => {
     if (suggestionModal.current){
@@ -82,13 +78,7 @@ const WidgetSearch: React.FunctionComponent<IProps> = (props) => {
   };
 
   const handleInputChange = (event: React.FocusEvent<HTMLInputElement, Element>): void => {
-    const query = event.target.value;
-    setSuggestionQuery(query);
-    if (query.length > 0) {
-      displaySuggestionModal(true);
-    } else {
-      displaySuggestionModal(false);
-    }
+    setSuggestionQuery(event.target.value);
   };
 
   const handleInputKeyDown = (event: React.KeyboardEvent<HTMLInputElement>): void => {
@@ -101,9 +91,7 @@ const WidgetSearch: React.FunctionComponent<IProps> = (props) => {
   };
 
   const handleInputFocus = (): void => {
-    if (suggestionQuery.length > 0) {
-      displaySuggestionModal(true);
-    }
+    displaySuggestionModal(true);
   };
 
   const handleInputBlur = (event: React.FocusEvent<HTMLInputElement, Element>): void => {
@@ -116,15 +104,20 @@ const WidgetSearch: React.FunctionComponent<IProps> = (props) => {
     searchParams.set(URLParams.TagSum, newTagSum.toString()); 
     setSearchParams(searchParams);
     setTagSum(newTagSum);
-    setTagArraySelected(getTagsSelected(newTagSum));
-    setTagArrayUnselected(getTagsUnselected(newTagSum));
+    setTagArraySelected(getSelectedTags(newTagSum));
+    setTagArrayUnselected(getUnselectedTags(newTagSum));
   }
 
   const handleSuggestionClick = (number: string): void => {
-    if (number.startsWith("t/")) {
-      const tagInt = convertStringToInt(number.substring(2), 0);
-      changeTagSum(tagSum + tagInt);
-    } else if (number.startsWith("u/")) {
+    if (number === 'u/'){
+      setSuggestionQuery(number);
+      if (suggestionInput.current){
+        suggestionInput.current.focus();
+        suggestionInput.current.value = number;
+      }     
+      return;
+    }
+    if (number.startsWith("u/")) {
       searchParams.set(URLParams.SearchQuery, number); 
       setSearchParams(searchParams);
       setSearchQuery(number);
@@ -136,19 +129,13 @@ const WidgetSearch: React.FunctionComponent<IProps> = (props) => {
     displaySuggestionModal(false);
   };
 
-  const handleTagCloseClick = (tag: number): void => {
-    changeTagSum(tagSum - tag);
+  const handleTagSelectClick = (tag: number): void => {
+    changeTagSum(tagSum + tag);
   };
 
-  const renderSuggestionList = (): JSX.Element => {
-    if (suggestionQuery.startsWith("t/")){
-      return <SuggestionList sugestionArray={tagArrayUnselected} handleSuggestionClick={handleSuggestionClick}/>
-    }
-    if (searchSugestionResult.length > 0) {
-      return <SuggestionList sugestionArray={searchSugestionResult} handleSuggestionClick={handleSuggestionClick}/>
-    }
-    return <div className="w4-widget__head__filter__result">No results...</div>;
-  } 
+  const handleTagUnselectClick = (tag: number): void => {
+    changeTagSum(tagSum - tag);
+  };
 
   return (
     <div className="w4-section w4-section--search" style={{zIndex: props.zIndex}}>
@@ -157,30 +144,38 @@ const WidgetSearch: React.FunctionComponent<IProps> = (props) => {
           <div className="w4-flex w4-margin-top w4-margin-bottom" style={{position: "relative"}}>
             <div className="w4-widget__head__input">
               <input 
+                ref={suggestionInput}
                 className="w4-input" 
                 type="text"
-                placeholder="search title or user"
+                placeholder="search by titles"
                 onChange={handleInputChange} 
                 onKeyDown={handleInputKeyDown}
                 onFocus={handleInputFocus}
                 onBlur={handleInputBlur}
               />
               <div ref={suggestionModal} className="w4-widget__modal w4-widget__modal--input w4-theme-text w4-container" style={{display:"none"}}>
-                {
-                  renderSuggestionList()
-                }
+                <SuggestionList suggestionArray={searchSugestionResult} handleSuggestionClick={handleSuggestionClick}/>
               </div>     
             </div>
+            <div className="w4-button w4-button-primary w4-widget__head__button w4-theme" onClick={() => setShowFilterModal('block')}>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45 45" height="30" fill="#ffffff">
+                <path d="M21.35 42V30.75h3v4.15H42v3H24.35V42ZM6 37.9v-3h12.35v3Zm9.35-8.3v-4.1H6v-3h9.35v-4.2h3v11.3Zm6-4.1v-3H42v3Zm8.3-8.25V6h3v4.1H42v3h-9.35v4.15ZM6 13.1v-3h20.65v3Z" />
+              </svg>               
+            </div>
+            <div className="w4-widget__modal w4-widget__modal--filter w4-theme-text w4-container" style={{display: showFilterModal, zIndex:'10'}}>
+              <h2>Tags:</h2>
+              <TagListUnselected tagArray={tagArrayUnselected} handleTagSelect={handleTagSelectClick} />
+            </div>
+            <div className="w4-modal-background" onClick={() => setShowFilterModal('none')} style={{display: showFilterModal}} />
           </div>
-          <TagList tagArray={tagArraySelected} handleTagCloseClick={handleTagCloseClick}/>
+          <TagListSelected tagArray={tagArraySelected} handleTagUnselectClick={handleTagUnselectClick}/>
         </div>
         <div className="w4-widget__body w4-container w4-theme-text">
           {
-            (searchQuery == null || searchQuery === '')  && 
-            <h2 style={{marginBottom: '10px'}}>Last updated</h2>
+            searchQuery && <h2 style={{marginBottom: '10px'}}>Last updated</h2>
           }
           {
-            (searchQuery != null && searchResult.length === 0) && 
+            (!searchQuery && searchResult.length === 0) && 
             <h2>Your search - {searchQuery} - did not match any note.</h2>
           }
           <NoteList searchResult={searchResult} handleSuggestionClick={handleSuggestionClick}/>
