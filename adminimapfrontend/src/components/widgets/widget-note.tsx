@@ -7,9 +7,7 @@ const IndexNote: JSX.Element =
   (
     <div className="w4-widget__body w4-theme-text">
       <div className="w4-container w4-theme-cyan">
-        <div className="w4-flex" style={{alignItems: "flex-start", justifyContent: "space-between"}}>
-          <h1>Welcome to AdminiMap service!</h1> 
-        </div>    
+        <h1>Welcome to AdminiMap service!</h1>   
       </div>
       <div className="w4-container w4-blog">
         <h2>Overview</h2>
@@ -36,9 +34,7 @@ const NotFoundNote: React.FunctionComponent<INotFoundProps> = (props) => {
   return (
     <div className="w4-widget__body w4-theme-text">
       <div className="w4-container w4-theme-cyan">
-        <div className="w4-flex" style={{alignItems: "flex-start", justifyContent: "space-between"}}>
-          <h1>{`Note with number "${props.noteNumber}" not found!`}</h1> 
-        </div>    
+        <h1>{`Note with number "${props.noteNumber}" not found!`}</h1>    
       </div>
       <div className="w4-container w4-blog"></div>
     </div>
@@ -47,10 +43,11 @@ const NotFoundNote: React.FunctionComponent<INotFoundProps> = (props) => {
 
 interface INoteProps {
   note: INoteDTO;
-  html: string;
 }
 
 const Note: React.FunctionComponent<INoteProps> = (props) => {
+  const noteHtml = useFetch<string>(`/notes/${props.note.number}/index.html`, '', false);
+
   return (
     <div className="w4-widget__body w4-theme-text">
       <div className="w4-container w4-theme-cyan">
@@ -58,34 +55,32 @@ const Note: React.FunctionComponent<INoteProps> = (props) => {
           <h1>{props.note.title}</h1>
           <div style={{margin: "5px 0"}}> {new Date(props.note.lastUpdate).toLocaleDateString("en-US")}</div>
         </div>
-        <div className="w4-flex" style={{alignItems: "flex-start", justifyContent: "space-between"}}>
-          <div className="w4-tag w4-theme w4-flex">
-            <div className="w4-tag-text">{props.note.tagsString}</div>
+        <div className="w4-flex" style={{alignItems: "center", justifyContent: "space-between"}}>
+          <div className="w4-tag w4-theme w4-flex" style={{fontSize: "14px"}}>
+            {props.note.tagsString}
           </div>
           <div className="w4-tag w4-tag-text">u/{props.note.userName}</div>
         </div>    
       </div>
-      <div className="w4-container w4-blog" dangerouslySetInnerHTML={{__html: props.html}} />
+      <div className="w4-container w4-blog" dangerouslySetInnerHTML={{__html: noteHtml}} />
     </div>
   );
 }
 
 interface IProps {
   noteNumber: string | null;
+  note: INoteDTO | null;
   zIndex: string;
 }
 
 const WidgetNote: React.FunctionComponent<IProps> = (props) => {
-  const note = useFetch<INoteDTO | null>(props.noteNumber && 'api/note?number=' + props.noteNumber, null, true);
-  const noteHtml = useFetch<string>(props.noteNumber && `/notes/${props.noteNumber}/index.html`, '', false);
-
   return (
     <div className="w4-section w4-section--note" style={{zIndex: props.zIndex}}>
       <div className="w4-widget w4-flex-column">
         {
           props.noteNumber 
-          ? ( note 
-              ? <Note note={note} html={noteHtml} /> 
+          ? (props.note 
+              ? <Note note={props.note} /> 
               : <NotFoundNote noteNumber={props.noteNumber} />
             )
           : IndexNote

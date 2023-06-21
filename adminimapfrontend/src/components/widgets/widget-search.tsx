@@ -10,11 +10,8 @@ import SuggestionList from '../lists/suggestion-list';
 import { TagArray } from '../../constants';
 import { convertStringToInt, getDefaultIfNull } from '../../utils';
 import TagListUnselected from '../lists/tag-unselected-list';
+import { FilterIcon } from '../icons/icons';
 
-
-interface IProps {
-  zIndex: string;
-}
 
 const useSearchRequest = (searchQuery: string | null, tagSum: number): Array<INoteDTO> => {
   let request = 'api/notes?query=';
@@ -52,6 +49,9 @@ const getUnselectedTags = (tagsNumber: number): Array<ITag> => {
   return result;
 };
 
+interface IProps {
+  zIndex: string;
+}
 
 const WidgetSearch: React.FunctionComponent<IProps> = (props) => {
   const suggestionInput = React.useRef<HTMLInputElement>(null);
@@ -72,13 +72,7 @@ const WidgetSearch: React.FunctionComponent<IProps> = (props) => {
   const [showFilterModal, setShowFilterModal] = useState('none');
 
   const displaySuggestionModal = (isShow: boolean): void => {
-    if (suggestionModal.current){
-      suggestionModal.current.style.display = isShow ? "block" : "none";
-    }
-  };
-
-  const handleInputChange = (event: React.FocusEvent<HTMLInputElement, Element>): void => {
-    setSuggestionQuery(event.target.value);
+    suggestionModal.current!.style.display = isShow ? "block" : "none";
   };
 
   const handleInputKeyDown = (event: React.KeyboardEvent<HTMLInputElement>): void => {
@@ -88,10 +82,6 @@ const WidgetSearch: React.FunctionComponent<IProps> = (props) => {
       setSearchParams(searchParams);
       displaySuggestionModal(false);
     }
-  };
-
-  const handleInputFocus = (): void => {
-    displaySuggestionModal(true);
   };
 
   const handleInputBlur = (event: React.FocusEvent<HTMLInputElement, Element>): void => {
@@ -108,33 +98,24 @@ const WidgetSearch: React.FunctionComponent<IProps> = (props) => {
     setTagArrayUnselected(getUnselectedTags(newTagSum));
   }
 
-  const handleSuggestionClick = (number: string): void => {
-    if (number === 'u/'){
-      setSuggestionQuery(number);
-      if (suggestionInput.current){
-        suggestionInput.current.focus();
-        suggestionInput.current.value = number;
-      }     
+  const handleSuggestionClick = (text: string): void => {
+    if (text === 'u/'){
+      setSuggestionQuery(text);
+      suggestionInput.current!.focus();
+      suggestionInput.current!.value = text;
       return;
     }
-    if (number.startsWith("u/")) {
-      searchParams.set(URLParams.SearchQuery, number); 
+    if (text.startsWith("u/")) {
+      searchParams.set(URLParams.SearchQuery, text); 
       setSearchParams(searchParams);
-      setSearchQuery(number);
+      setSearchQuery(text);
+      suggestionInput.current!.value = text;
     } else {
       searchParams.set(URLParams.TabNumber, Tabs.Note);
-      searchParams.set(URLParams.NoteNumber, number); 
+      searchParams.set(URLParams.NoteNumber, text);
       setSearchParams(searchParams);
     }
     displaySuggestionModal(false);
-  };
-
-  const handleTagSelectClick = (tag: number): void => {
-    changeTagSum(tagSum + tag);
-  };
-
-  const handleTagUnselectClick = (tag: number): void => {
-    changeTagSum(tagSum - tag);
   };
 
   return (
@@ -148,37 +129,50 @@ const WidgetSearch: React.FunctionComponent<IProps> = (props) => {
                 className="w4-input" 
                 type="text"
                 placeholder="search by titles"
-                onChange={handleInputChange} 
+                onChange={(e) => setSuggestionQuery(e.target.value)} 
                 onKeyDown={handleInputKeyDown}
-                onFocus={handleInputFocus}
+                onFocus={() => displaySuggestionModal(true)}
                 onBlur={handleInputBlur}
               />
-              <div ref={suggestionModal} className="w4-widget__modal w4-widget__modal--input w4-theme-text w4-container" style={{display:"none"}}>
-                <SuggestionList suggestionArray={searchSugestionResult} handleSuggestionClick={handleSuggestionClick}/>
+              <div ref={suggestionModal} className="w4-widget__modal w4-widget__modal--input w4-theme-text w4-container">
+                <SuggestionList 
+                  suggestionArray={searchSugestionResult} 
+                  handleSuggestionClick={handleSuggestionClick}
+                />
               </div>     
             </div>
             <div className="w4-button w4-button-primary w4-widget__head__button w4-theme" onClick={() => setShowFilterModal('block')}>
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45 45" height="30" fill="#ffffff">
-                <path d="M21.35 42V30.75h3v4.15H42v3H24.35V42ZM6 37.9v-3h12.35v3Zm9.35-8.3v-4.1H6v-3h9.35v-4.2h3v11.3Zm6-4.1v-3H42v3Zm8.3-8.25V6h3v4.1H42v3h-9.35v4.15ZM6 13.1v-3h20.65v3Z" />
-              </svg>               
+              {FilterIcon}              
             </div>
             <div className="w4-widget__modal w4-widget__modal--filter w4-theme-text w4-container" style={{display: showFilterModal, zIndex:'10'}}>
               <h2>Tags:</h2>
-              <TagListUnselected tagArray={tagArrayUnselected} handleTagSelect={handleTagSelectClick} />
+              <TagListUnselected 
+                tagArray={tagArrayUnselected} 
+                handleTagSelect={(tag) => changeTagSum(tagSum + tag)} 
+              />
             </div>
-            <div className="w4-modal-background" onClick={() => setShowFilterModal('none')} style={{display: showFilterModal}} />
+            <div className="w4-modal-background" 
+              onClick={() => setShowFilterModal('none')} 
+              style={{display: showFilterModal}} 
+            />
           </div>
-          <TagListSelected tagArray={tagArraySelected} handleTagUnselectClick={handleTagUnselectClick}/>
+          <TagListSelected 
+            tagArray={tagArraySelected} 
+            handleTagUnselect={(tag) => changeTagSum(tagSum - tag)}
+          />
         </div>
         <div className="w4-widget__body w4-container w4-theme-text">
           {
-            searchQuery && <h2 style={{marginBottom: '10px'}}>Last updated</h2>
+            !searchQuery && <h2 style={{marginBottom: '10px'}}>Last updated</h2>
           }
           {
-            (!searchQuery && searchResult.length === 0) && 
+            (searchQuery && searchResult.length === 0) && 
             <h2>Your search - {searchQuery} - did not match any note.</h2>
           }
-          <NoteList searchResult={searchResult} handleSuggestionClick={handleSuggestionClick}/>
+          <NoteList 
+            searchResult={searchResult} 
+            handleSuggestionClick={handleSuggestionClick}
+          />
         </div>
       </div>
     </div>

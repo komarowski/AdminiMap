@@ -248,6 +248,7 @@ h6 {
   top: 0;
   width: 100%;
   height: 100%;
+  background: #2b67776f;
 }
 
 .w4-widget {
@@ -269,6 +270,7 @@ h6 {
 }
 
 .w4-widget__modal{
+  display: none;
   position: absolute;
   width: 100%;
   box-sizing: border-box;
@@ -505,6 +507,10 @@ h6 {
   color: var(--white);
 }
 
+.w4-button-tab--map {
+  display: none;
+}
+
 .w4-button-tag {
   cursor: pointer;
 }
@@ -523,6 +529,27 @@ h6 {
 }
 
 .w4-button-tag-close:active > svg {
+  fill: var(--dark-cyan);
+}
+
+.w4-button-marker {
+  width: 18px;
+  height: 18px;
+  padding: 0;
+  border-radius: 50%;
+  background: var(--dark-cyan);
+}
+
+.w4-button-marker:hover {
+  background: var(--dark-cyan-hover);
+}
+
+.w4-button-marker:active {
+  background: var(--light-gray-blue);
+  color: var(--dark-cyan);
+}
+
+.w4-button-marker:active > svg {
   fill: var(--dark-cyan);
 }
 
@@ -658,8 +685,8 @@ table {
     width: 100%;
   }
 
-  #button-tab-map {
-    display: flex!important;
+  .w4-button-tab--map {
+    display: flex;
   }
 }
 

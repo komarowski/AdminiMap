@@ -22,4 +22,4 @@ const SuggestionList: React.FunctionComponent<IProps> = (props) => {
   );
 }
 
-export default React.memo(SuggestionList);
+export default SuggestionList;

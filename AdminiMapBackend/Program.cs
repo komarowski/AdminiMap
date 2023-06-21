@@ -116,7 +116,7 @@ app.MapGet("/api/search", async (string? start, AdminiMapContext context) =>
 app.MapGet("/api/markers", async (string? query, int? tags, double? zoom, double? lon, double? lat, AdminiMapContext context) => {
   if (zoom is null || lon is null || lat is null)
   {
-    return Array.Empty<NoteMarkerDTO>();
+    return Array.Empty<Note>();
   }
 
   IQueryable<Note> contextQuery = context.Notes.AsQueryable();
@@ -148,7 +148,6 @@ app.MapGet("/api/markers", async (string? query, int? tags, double? zoom, double
   double longRight = Math.Min(lon.Value + delta, 180.0);
   return await contextQuery
   .Where(note => note.Latitude >= latBottom & note.Latitude <= latTop && note.Longitude >= longLeft && note.Longitude <= longRight)
-  .Select(note => new NoteMarkerDTO(note))
   .ToArrayAsync();
 });
 
