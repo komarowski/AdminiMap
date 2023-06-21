@@ -1,6 +1,7 @@
 ---
 title: Botanical garden
 username: nikkom
+tags: 9
 latitude: 43.22121303362543
 longitude: 76.91357426245136
 ---

@@ -1,10 +1,10 @@
-export interface IMarkerDTO {
-  number: string;
+
+export interface ITag {
+  number: number;
   title: string;
-  userName: string;
-  latitude: number;
-  longitude: number;
 }
+
+// #region <DTO types>
 
 export interface ISuggestionDTO {
   number: string;
@@ -15,6 +15,10 @@ export interface INoteDTO {
   id: number;
   number: string;
   title: string;
+  tagsString: string;
   userName: string;
   lastUpdate: string;
-}
+  latitude: number;
+  longitude: number;
+} 
+// #endregion  

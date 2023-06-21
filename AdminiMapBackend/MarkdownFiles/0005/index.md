@@ -1,6 +1,7 @@
 ---
 title: Grand Park - Shopping mall
 username: nikkom
+tags: 15
 latitude: 43.237627592903266
 longitude: 76.85191502899238
 ---

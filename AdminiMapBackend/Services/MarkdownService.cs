@@ -1,4 +1,5 @@
-﻿using AdminiMapBackend.Entities;
+﻿using AdminiMapBackend.Data;
+using AdminiMapBackend.Entities;
 using Markdig;
 using Markdig.Extensions.Yaml;
 using Markdig.Syntax;
@@ -70,6 +71,8 @@ namespace AdminiMapBackend.Services
         { 
           Title = markdownFrontMatter.Title,
           Number = markdownFile.Directory.Name,
+          Tags = markdownFrontMatter.Tags,
+          TagsString = GetTagsString(markdownFrontMatter.Tags),
           UserName = markdownFrontMatter.UserName,
           Longitude = markdownFrontMatter.Longitude,
           Latitude = markdownFrontMatter.Latitude,
@@ -111,6 +114,16 @@ namespace AdminiMapBackend.Services
         markdownText = markdownText.Replace(match.Value, newMarkdownImageLine);
       }
       return markdownText;
+    }
+
+    private static string GetTagsString(int tagsSum)
+    {
+      var tags = InitialData.Tags
+        .Where(tag => (tagsSum & tag.Number) == tag.Number)
+        .Select(tag => tag.Title)
+        .ToArray();
+
+      return string.Join(", ", tags);
     }
   }
 }

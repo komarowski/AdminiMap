@@ -1,6 +1,7 @@
 ---
 title: Big Almaty Peak
 username: nikkom
+tags: 2
 latitude: 43.05349790664258
 longitude: 76.93385623340406
 ---

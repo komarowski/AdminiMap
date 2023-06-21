@@ -137,12 +137,15 @@ h6 {
 .w4-link {
   font-weight: bold;
   text-decoration: underline;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
   cursor: pointer;
-  color: var(--dark-cyan)
+  color: var(--dark-cyan);
 }
 
 .w4-link:hover {
-  color: var(--dark-cyan-hover)
+  color: var(--dark-cyan-hover);
 }
 
 
@@ -237,6 +240,17 @@ h6 {
   font-size: 40px;
 }
 
+.w4-modal-background {
+  display: none;
+  position: fixed;
+  z-index: 9;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background: #2b67776f;
+}
+
 .w4-widget {
   height: 100%;
 }
@@ -256,6 +270,7 @@ h6 {
 }
 
 .w4-widget__modal{
+  display: none;
   position: absolute;
   width: 100%;
   box-sizing: border-box;
@@ -396,7 +411,35 @@ h6 {
   font-size: 14px;
   padding: 10px;
   background: var(--white);
+  border: 1px solid var(--dark-cyan);
   border-radius: 6px;
+  width: 150px;
+}
+
+.w4-marker-popup:after {
+  position: absolute;
+  /* z-index: -1; */
+  content: "";
+  right: calc(50% - 10px);
+  top: -8px;
+  border-style: solid;
+  border-width: 0 10px 10px 10px;
+  border-color: transparent transparent var(--white) transparent;
+  transition-duration: 0.3s;
+  transition-property: transform;
+}
+
+.w4-marker-popup:before {
+  position: absolute;
+  z-index: -1;
+  content: "";
+  right: calc(50% - 25px);
+  top: -10px;
+  border-left: 25px solid transparent;
+  border-right: 25px solid transparent;
+  border-bottom: 25px solid var(--dark-cyan);
+  transition-duration: 0.3s;
+  transition-property: transform;
 }
 
 
@@ -464,6 +507,14 @@ h6 {
   color: var(--white);
 }
 
+.w4-button-tab--map {
+  display: none;
+}
+
+.w4-button-tag {
+  cursor: pointer;
+}
+
 .w4-button-tag-close {
   padding: 0;
 }
@@ -478,6 +529,27 @@ h6 {
 }
 
 .w4-button-tag-close:active > svg {
+  fill: var(--dark-cyan);
+}
+
+.w4-button-marker {
+  width: 18px;
+  height: 18px;
+  padding: 0;
+  border-radius: 50%;
+  background: var(--dark-cyan);
+}
+
+.w4-button-marker:hover {
+  background: var(--dark-cyan-hover);
+}
+
+.w4-button-marker:active {
+  background: var(--light-gray-blue);
+  color: var(--dark-cyan);
+}
+
+.w4-button-marker:active > svg {
   fill: var(--dark-cyan);
 }
 
@@ -613,8 +685,8 @@ table {
     width: 100%;
   }
 
-  #button-tab-map {
-    display: flex!important;
+  .w4-button-tab--map {
+    display: flex;
   }
 }
 
