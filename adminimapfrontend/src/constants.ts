@@ -1,16 +1,16 @@
 import { IMapState, ITag } from "./types";
 
 export const TAGS: Array<ITag> = [
-  { number: 1, title: "Travel"},
-  { number: 2, title: "Location"},
-  { number: 4, title: "Sights"},
-  { number: 8, title: "One day trip"}
+  { number: 1, title: "mytravel"},
+  { number: 2, title: "attractions"},
+  { number: 4, title: "walkingplaces"},
+  { number: 8, title: "forinstagram"}
 ];
 
 export const DEFAULTMAPSTATE: IMapState = {
-  'zoom': 15, 
-  'long': 76.9184966987745, 
-  'lat': 43.24979821566148
+  zoom: 15, 
+  long: 76.9184966987745, 
+  lat: 43.24979821566148
 }
 
 // #region <Router params>

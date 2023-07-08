@@ -35,10 +35,10 @@ namespace AdminiMapBackend.Data
     /// </summary>
     public static readonly Tag[] Tags = 
       { 
-        new Tag() { Number = 1, Title = "Travel"},
-        new Tag() { Number = 2, Title = "Location"},
-        new Tag() { Number = 4, Title = "Sights"},
-        new Tag() { Number = 8, Title = "One day trip"},
+        new Tag() { Number = 1, Title = "mytravel"},
+        new Tag() { Number = 2, Title = "attractions"},
+        new Tag() { Number = 4, Title = "walkingplaces"},
+        new Tag() { Number = 8, Title = "forinstagram"},
       };
   }
 }
