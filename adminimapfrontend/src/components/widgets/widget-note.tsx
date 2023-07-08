@@ -5,7 +5,7 @@ import { INoteDTO } from '../../types';
 
 const IndexNote: JSX.Element = 
   (
-    <div className="w4-widget__body w4-theme-text">
+    <>
       <div className="w4-container w4-theme-cyan">
         <h1>Welcome to AdminiMap service!</h1>   
       </div>
@@ -22,7 +22,7 @@ const IndexNote: JSX.Element =
           <a href="https://www.markdownguide.org/getting-started/">The Markdown</a> markup language is used for writing articles.
         </p>
       </div>
-    </div>
+    </>
   );
 
 
@@ -32,12 +32,12 @@ interface INotFoundProps {
 
 const NotFoundNote: React.FunctionComponent<INotFoundProps> = (props) => {
   return (
-    <div className="w4-widget__body w4-theme-text">
+    <>
       <div className="w4-container w4-theme-cyan">
         <h1>{`Note with number "${props.noteNumber}" not found!`}</h1>    
       </div>
       <div className="w4-container w4-blog"></div>
-    </div>
+    </>
   );
 }
 
@@ -46,16 +46,16 @@ interface INoteProps {
 }
 
 const Note: React.FunctionComponent<INoteProps> = (props) => {
-  const noteHtml = useFetch<string>(`/notes/${props.note.number}/index.html`, '', false);
+  const noteHtml = useFetch<string>(`/notes/${props.note.number}.html`, '', true);
 
   return (
-    <div className="w4-widget__body w4-theme-text">
+    <>
       <div className="w4-container w4-theme-cyan">
-        <div className="w4-flex" style={{alignItems: "flex-start", justifyContent: "space-between"}}>
+        <div className="w4-flex-beetwen" style={{alignItems: "flex-start"}}>
           <h1>{props.note.title}</h1>
           <div style={{margin: "5px 0"}}> {new Date(props.note.lastUpdate).toLocaleDateString("en-US")}</div>
         </div>
-        <div className="w4-flex" style={{alignItems: "center", justifyContent: "space-between"}}>
+        <div className="w4-flex-beetwen">
           <div className="w4-tag w4-theme w4-flex" style={{fontSize: "14px"}}>
             {props.note.tagsString}
           </div>
@@ -63,20 +63,19 @@ const Note: React.FunctionComponent<INoteProps> = (props) => {
         </div>    
       </div>
       <div className="w4-container w4-blog" dangerouslySetInnerHTML={{__html: noteHtml}} />
-    </div>
+    </>
   );
 }
 
 interface IProps {
   noteNumber: string | null;
   note: INoteDTO | null;
-  zIndex: string;
 }
 
 const WidgetNote: React.FunctionComponent<IProps> = (props) => {
   return (
-    <div className="w4-section w4-section--note" style={{zIndex: props.zIndex}}>
-      <div className="w4-widget w4-flex-column">
+    <div className="w4-widget w4-flex-column">
+      <div className="w4-widget__body w4-theme-text">
         {
           props.noteNumber 
           ? (props.note 

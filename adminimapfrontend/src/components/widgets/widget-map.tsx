@@ -3,32 +3,20 @@ import { useState } from 'react';
 import { Map, Marker, Overlay } from 'pigeon-maps'
 import { useFetch, useLocalStorage } from '../../customHooks';
 import { useSearchParams } from "react-router-dom";
-import { Tabs, URLParams } from '../../constants';
-import { INoteDTO } from '../../types';
+import { DEFAULTMAPSTATE, LocalStorageParams, Tabs, URLParams } from '../../constants';
+import { IMapState, INoteDTO } from '../../types';
 import { CloseIcon } from '../icons/icons';
 
 
-interface IMapState {
-  zoom: number;
-  long: number;
-  lat: number;
-}
-
-const defaultMapState: IMapState = {
-  'zoom': 15, 
-  'long': 76.9184966987745, 
-  'lat': 43.24979821566148
-}
-
 const useMarkersRequest = (mapState: IMapState, query: string | null, tagSum: string | null): Array<INoteDTO> => {
-  let request = `api/markers?zoom=${mapState.zoom}&lon=${mapState.long}&lat=${mapState.lat}`;
+  let request = `api/mapnotes?zoom=${mapState.zoom}&lon=${mapState.long}&lat=${mapState.lat}`;
   if (query){
-    request += '&query=' + query;
+    request += `&query=${query}`;
   }
   if (tagSum) {
-    request += '&tags=' + tagSum;
+    request += `&tags=${tagSum}`;
   }
-  return useFetch<Array<INoteDTO>>(request, [], true);
+  return useFetch<Array<INoteDTO>>(request, []);
 };
 
 const useSelectedNote = <T,>(propsValue: T): [T, React.Dispatch<React.SetStateAction<T>>] => {
@@ -53,24 +41,26 @@ const usePopupDisplay = (propsValue: INoteDTO | null): [string, React.Dispatch<R
 
 interface IProps {
   note: INoteDTO | null;
-  zIndex: string;
+  setNoteTab: (tab: string) => void;
 }
 
 const WidgetMap: React.FunctionComponent<IProps> = (props) => {
+  const {note} = props;
+
   const [searchParams, setSearchParams] = useSearchParams();
   const [mapStateCache, setMapStateCache] = useLocalStorage<IMapState>(
-    'mapstate',
+    LocalStorageParams.MAPSTATE,
     { 
-      'zoom': defaultMapState.zoom, 
-      'long': defaultMapState.long,
-      'lat': defaultMapState.lat
+      zoom: DEFAULTMAPSTATE.zoom, 
+      long: DEFAULTMAPSTATE.long,
+      lat: DEFAULTMAPSTATE.lat
     });
   const [mapState, setMapState] = useState<IMapState>(mapStateCache);
-
-  const markers = useMarkersRequest(mapState, searchParams.get(URLParams.SearchQuery), searchParams.get(URLParams.TagSum));
-  const [selectedNote, setSelectedNote] = useSelectedNote<INoteDTO | null>(props.note);
-  const [popupDisplay, setPopupDisplay] = usePopupDisplay(props.note);
-  const center: [number, number] = [props.note ? props.note.latitude : defaultMapState.lat, props.note ? props.note.longitude : defaultMapState.long];
+  const markers = useMarkersRequest(mapState, searchParams.get(URLParams.SEARCHQUERY), searchParams.get(URLParams.TAGSUM));
+  const [selectedNote, setSelectedNote] = useSelectedNote<INoteDTO | null>(note);
+  const [popupDisplay, setPopupDisplay] = usePopupDisplay(note);
+  const center: [number, number] = [note ? note.latitude : DEFAULTMAPSTATE.lat, note ? note.longitude : DEFAULTMAPSTATE.long];
+  const noteNumber = searchParams.get(URLParams.NOTENUMBER);
 
   const handleMarkerClick = (marker: INoteDTO) => {
     setSelectedNote(marker);
@@ -78,13 +68,13 @@ const WidgetMap: React.FunctionComponent<IProps> = (props) => {
   };
 
   const handlePopupClick = (number: string) => {
-    searchParams.set(URLParams.TabNumber, Tabs.Note);
-    searchParams.set(URLParams.NoteNumber, number); 
+    props.setNoteTab(Tabs.NOTE);
+    searchParams.set(URLParams.NOTENUMBER, number); 
     setSearchParams(searchParams);
     setMapStateCache({ 
-      'zoom': mapState.zoom, 
-      'long': center[1], 
-      'lat': center[0]
+      zoom: mapState.zoom, 
+      long: center[1], 
+      lat: center[0]
     });
   };
 
@@ -96,55 +86,53 @@ const WidgetMap: React.FunctionComponent<IProps> = (props) => {
     {
       setMapState(
         { 
-          'zoom': zoomN, 
-          'long': centerN[1], 
-          'lat': centerN[0]
+          zoom: zoomN, 
+          long: centerN[1], 
+          lat: centerN[0]
         });
     }
   };
 
   return (
-    <div className="w4-section w4-section--map" style={{zIndex: props.zIndex}}>
-      <Map
-        defaultCenter={[mapStateCache.lat, mapStateCache.long]} 
-        defaultZoom={mapStateCache.zoom}
-        center={center}
-        onBoundsChanged={({ center, zoom }) => { 
-          handleBoundsChanged(center, zoom)
-        }}
-      >
-        {markers.map(marker => (
-          <Marker
-            key={marker.number}
-            width={50}
-            anchor={[marker.latitude, marker.longitude]} 
-            color={searchParams.get(URLParams.NoteNumber) === marker.number ? "#52ab98" : "#2b6777"}  
-            onClick={() => handleMarkerClick(marker)}
-          />
-        ))}
-        {
-          selectedNote &&
-            <Overlay 
-              anchor={[selectedNote.latitude, selectedNote.longitude]} 
-              offset={[86, -8]}
-            >
-              <div className="w4-marker-popup" style={{display: popupDisplay}}>
-                <div className="w4-link"  onClick={() => handlePopupClick(selectedNote.number)}>
-                  {selectedNote.title}
-                </div>
-                <div>
-                  u/{selectedNote.userName}
-                </div>
-                <div style={{display: 'flex', justifyContent: 'flex-end'}}>
-                  <div className="w4-button w4-button-marker" onClick={() => setPopupDisplay('none')}>
-                    {CloseIcon}
-                  </div>
-                </div>               
+    <Map
+      defaultCenter={[mapStateCache.lat, mapStateCache.long]} 
+      defaultZoom={mapStateCache.zoom}
+      center={center}
+      onBoundsChanged={({ center, zoom }) => { 
+        handleBoundsChanged(center, zoom)
+      }}
+    >
+      {markers.map(marker => (
+        <Marker
+          key={marker.number}
+          width={50}
+          anchor={[marker.latitude, marker.longitude]} 
+          color={noteNumber === marker.number ? "#52ab98" : "#2b6777"}  
+          onClick={() => handleMarkerClick(marker)}
+        />
+      ))}
+      {
+        selectedNote &&
+          <Overlay 
+            anchor={[selectedNote.latitude, selectedNote.longitude]} 
+            offset={[86, -8]}
+          >
+            <div className="w4-marker-popup" style={{display: popupDisplay}}>
+              <div className="w4-link"  onClick={() => handlePopupClick(selectedNote.number)}>
+                {selectedNote.title}
               </div>
-            </Overlay>
-        }       
-      </Map>
-    </div>
+              <div>
+                u/{selectedNote.userName}
+              </div>
+              <div style={{display: 'flex', justifyContent: 'flex-end'}}>
+                <div className="w4-button w4-button-marker" onClick={() => setPopupDisplay('none')}>
+                  {CloseIcon}
+                </div>
+              </div>               
+            </div>
+          </Overlay>
+      }       
+    </Map>
   );
 }
 

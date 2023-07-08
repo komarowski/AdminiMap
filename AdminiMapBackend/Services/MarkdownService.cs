@@ -4,13 +4,12 @@ using Markdig;
 using Markdig.Extensions.Yaml;
 using Markdig.Syntax;
 using System.Text;
-using System.Text.RegularExpressions;
 using YamlDotNet.Serialization;
 
 namespace AdminiMapBackend.Services
 {
   /// <summary>
-  /// Service for manage markdown files.
+  /// Service for markdown files management.
   /// </summary>
   public static class MarkdownService
   {
@@ -60,6 +59,7 @@ namespace AdminiMapBackend.Services
     {
       var noteList = new List<Note>();
       FileInfo[] markdownFiles = FileService.GetMarkdownFiles();
+      FileService.CreateTargetDirectories();
       foreach (var markdownFile in markdownFiles)
       {
         var markdown = File.ReadAllText(markdownFile.FullName, Encoding.UTF8);
@@ -67,10 +67,11 @@ namespace AdminiMapBackend.Services
         if (markdownFrontMatter is null)
           continue;
 
+        var noteNumber = Path.GetFileNameWithoutExtension(markdownFile.Name);
         var note = new Note() 
         { 
           Title = markdownFrontMatter.Title,
-          Number = markdownFile.Directory.Name,
+          Number = noteNumber,
           Tags = markdownFrontMatter.Tags,
           TagsString = GetTagsString(markdownFrontMatter.Tags),
           UserName = markdownFrontMatter.UserName,
@@ -80,14 +81,8 @@ namespace AdminiMapBackend.Services
         };
         noteList.Add(note);
         
-        markdown = ChangeImagePaths(markdown, note.Number);
         var html = Markdown.ToHtml(markdown, Pipeline);
-        var targetHtmlPath = FileService.GetHtmlPathFromMarkdownPath(markdownFile.FullName);
-        var targetDirectory = Path.GetDirectoryName(targetHtmlPath);
-        if (targetDirectory is null)
-          continue;
-
-        Directory.CreateDirectory(targetDirectory);
+        var targetHtmlPath = FileService.GetHtmlPath(noteNumber);
         File.WriteAllText(targetHtmlPath, html, Encoding.UTF8);
       }
 
@@ -95,27 +90,43 @@ namespace AdminiMapBackend.Services
     }
 
     /// <summary>
-    /// Change image paths in markdown text to display correctly on the client side. 
+    /// Converting markdown to html and saving markdown and html files.
     /// </summary>
-    /// <param name="markdownText">Markdown text.</param>
-    /// <param name="noteNumber">Note subfolder name.</param>
-    /// <returns>Edited markdown text.</returns>
-    private static string ChangeImagePaths(string markdownText, string noteNumber)
+    /// <param name="number">Note number.</param>
+    /// <param name="markdown">Markdown text.</param>
+    /// <returns>Note or null.</returns>
+    public static Note? ConvertMarkdownToHtml(string? number, string markdown)
     {
-      MatchCollection matches = new Regex("!\\[.*\\]\\(.*\\)").Matches(markdownText);
-      if (matches.Count == 0)
-        return markdownText;
+      var markdownFrontMatter = GetFrontMatter<NoteFrontMatter>(markdown);
+      if (markdownFrontMatter is null)
+        return null;
 
-      var relativeDirectory = $"notes/{noteNumber}/";
-      foreach (Match match in matches)
+      var noteNumber = number is null ? GetNewNumber() : number;
+      var note = new Note()
       {
-        var newMarkdownImageLine = match.Value;
-        newMarkdownImageLine = newMarkdownImageLine.Insert(newMarkdownImageLine.IndexOf('(') + 1, relativeDirectory);
-        markdownText = markdownText.Replace(match.Value, newMarkdownImageLine);
-      }
-      return markdownText;
+        Title = markdownFrontMatter.Title,
+        Number = noteNumber,
+        Tags = markdownFrontMatter.Tags,
+        TagsString = GetTagsString(markdownFrontMatter.Tags),
+        UserName = markdownFrontMatter.UserName,
+        Longitude = markdownFrontMatter.Longitude,
+        Latitude = markdownFrontMatter.Latitude,
+        LastUpdate = DateTime.UtcNow
+      };
+
+      var html = Markdown.ToHtml(markdown, Pipeline);
+      var targetPath = FileService.GetHtmlPath(noteNumber);
+      File.WriteAllText(targetPath, html, Encoding.UTF8);
+      var sourcePath = FileService.GetMarkdownPath(noteNumber);
+      File.WriteAllText(sourcePath, markdown, Encoding.UTF8);
+      return note;
     }
 
+    /// <summary>
+    /// Get tags string from tag sum.
+    /// </summary>
+    /// <param name="tagsSum">Tag sum.</param>
+    /// <returns>Tags string.</returns>
     private static string GetTagsString(int tagsSum)
     {
       var tags = InitialData.Tags
@@ -124,6 +135,33 @@ namespace AdminiMapBackend.Services
         .ToArray();
 
       return string.Join(", ", tags);
+    }
+
+    /// <summary>
+    /// Get integer from string.
+    /// </summary>
+    /// <param name="number">String integer.</param>
+    /// <returns>Parse integer or 0 if it can't be parsed.</returns>
+    private static int GetIntFromString(string number)
+    {
+      if (int.TryParse(number, out int result))
+        return result;
+      return 0;
+    }
+
+    /// <summary>
+    /// Get note new unique number.
+    /// </summary>
+    /// <returns>Note number.</returns>
+    private static string GetNewNumber()
+    {
+      var maxNumber = FileService.GetMarkdownFiles()
+        .Select(file => GetIntFromString(Path.GetFileNameWithoutExtension(file.Name)))
+        .Max();
+      maxNumber++;
+      return maxNumber
+        .ToString()
+        .PadLeft(4, '0');
     }
   }
 }

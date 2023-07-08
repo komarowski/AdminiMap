@@ -157,6 +157,12 @@ h6 {
   align-items: center;
 }
 
+.w4-flex-beetwen {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
 .w4-flex-wrap {
   display: flex;
   align-items: center;
@@ -170,6 +176,11 @@ h6 {
 
 .w4-container {
   padding: 8px 16px;
+}
+
+.w4-margin-center {
+  margin-left: 'auto';
+  margin-right: 'auto';
 }
 
 .w4-margin-top {
@@ -442,6 +453,10 @@ h6 {
   transition-property: transform;
 }
 
+.w4-button-group--admin {
+  justify-content: space-between;
+  min-width: 60px;
+}
 
 /* Buttons
 –––––––––––––––––––––––––––––––––––––––––––––––––– */
@@ -553,6 +568,17 @@ h6 {
   fill: var(--dark-cyan);
 }
 
+.w4-button-login {
+  width: 100%;
+  font-size: 18px;
+  padding: 8px 16px;
+}
+
+.w4-button-login:active {
+  background: var(--light-gray-blue);
+  color: var(--dark-cyan);
+}
+
 /* Forms
 –––––––––––––––––––––––––––––––––––––––––––––––––– */
 
@@ -567,7 +593,9 @@ h6 {
   box-sizing: border-box;
 	padding: 8px 16px;
 	width: 100%;
+}
 
+.w4-input--search {
   padding-inline-start: 2.5rem;
   background-image: url(../files/search_black.svg);
   background-position: center left 0.5rem;
@@ -575,7 +603,7 @@ h6 {
   background-repeat: no-repeat;
 }
 
-.w4-input:focus, input:focus{
+.w4-input--search:focus{
   outline: none;
   border-radius: 4px 4px 0px 0px;
 }

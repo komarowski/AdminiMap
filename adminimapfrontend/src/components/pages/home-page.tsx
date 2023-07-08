@@ -1,5 +1,4 @@
 import React from 'react';
-import AdminiLogo from "../../assets/files/onmap.svg";
 import { useSearchParams } from "react-router-dom";
 import WidgetSearch from "../widgets/widget-search";
 import WidgetNote from "../widgets/widget-note";
@@ -8,54 +7,70 @@ import { Tabs, URLParams } from '../../constants';
 import { SearchIcon, NoteIcon, MapIcon } from '../icons/icons';
 import { INoteDTO } from '../../types';
 import { useFetch } from '../../customHooks';
+import { HeaderLayout } from '../layout/header-layout';
 
 
 const HomePage: React.FunctionComponent = () => {
-  const [searchParams, setSearchParams] = useSearchParams({tab: Tabs.Note});
-  const tabCurrent = searchParams.get(URLParams.TabNumber);
-  const noteNumber = searchParams.get(URLParams.NoteNumber);
-  const note = useFetch<INoteDTO | null>(noteNumber && 'api/note?number=' + noteNumber, null, true);
+  const WidgetSearchRef = React.useRef<HTMLDivElement>(null);
+  const WidgetNoteRef = React.useRef<HTMLDivElement>(null);
+  const WidgetMapRef = React.useRef<HTMLDivElement>(null);
+  const TabSearchRef = React.useRef<HTMLDivElement>(null);
+  const TabNoteRef = React.useRef<HTMLDivElement>(null);
+  const TabMapRef = React.useRef<HTMLDivElement>(null);
+
+  const [searchParams] = useSearchParams();
+  const noteNumber = searchParams.get(URLParams.NOTENUMBER);
+  const note = useFetch<INoteDTO | null>(noteNumber && `api/notes/${noteNumber}`, null);
 
   const setTab = (tab: string): void => {
-    searchParams.set(URLParams.TabNumber, tab);
-    setSearchParams(searchParams);
+    changeZIndex(WidgetSearchRef.current!, tab, Tabs.SEARCH);
+    changeZIndex(WidgetNoteRef.current!, tab, Tabs.NOTE)
+    changeZIndex(WidgetMapRef.current!, tab, Tabs.MAP)
+    changeActiveClass(TabSearchRef.current!, tab, Tabs.SEARCH);
+    changeActiveClass(TabNoteRef.current!, tab, Tabs.NOTE);
+    changeActiveClass(TabMapRef.current!, tab, Tabs.MAP);
   }
 
-  const getActiveClass = (tab: string) => {
-    return tabCurrent === tab ? "w4-button-tab--active" : "w4-button-tab--inactive";
+  const changeActiveClass = (element: HTMLDivElement, currentTab: string, targetTab: string) => {
+    currentTab === targetTab 
+    ? element.classList.replace("w4-button-tab--inactive", "w4-button-tab--active") 
+    : element.classList.replace("w4-button-tab--active", "w4-button-tab--inactive");
   }
 
-  const getSectionZIndex = (tab: string) => {
-    return tabCurrent === tab ? "2" : "1";
+  const changeZIndex = (element: HTMLDivElement, currentTab: string, targetTab: string) => {
+    element.style.zIndex = targetTab === currentTab ? "2" : "1";
   }
  
   return (
-    <div className="w4-flex-column" style={{height: "100%"}}>
-      <header className="w4-header w4-theme">
-        <div className="w4-navbar w4-flex">
-          <a href="/" className="w4-button w4-logo">
-            <img src={AdminiLogo} alt="AdminiMap logo" width="26" /> &nbsp; AdminiMap 
-          </a>
-          <div className="w4-tab-container">
-            <div className={`w4-button w4-button-tab ${getActiveClass(Tabs.Search)}`} onClick={() => setTab(Tabs.Search)}>
-              {SearchIcon} &nbsp; Search
-            </div>
-            <div className={`w4-button w4-button-tab ${getActiveClass(Tabs.Note)}`} onClick={() => setTab(Tabs.Note)}>
-              {NoteIcon} &nbsp; Note
-            </div>
-            <div className={`w4-button w4-button-tab w4-button-tab--map ${getActiveClass(Tabs.Map)}`} onClick={() => setTab(Tabs.Map)}>
-              {MapIcon} &nbsp; Map
-            </div>
+    <>
+      <HeaderLayout children=
+      {
+        <div className="w4-tab-container">
+          <div ref={TabSearchRef} className='w4-button w4-button-tab w4-button-tab--inactive' onClick={() => setTab(Tabs.SEARCH)}>
+            {SearchIcon} &nbsp; Search
+          </div>
+          <div ref={TabNoteRef} className='w4-button w4-button-tab w4-button-tab--active' onClick={() => setTab(Tabs.NOTE)}>
+            {NoteIcon} &nbsp; Note
+          </div>   
+          <div ref={TabMapRef} className='w4-button w4-button-tab w4-button-tab--inactive w4-button-tab--map ' onClick={() => setTab(Tabs.MAP)}>
+            {MapIcon} &nbsp; Map
           </div>
         </div>
-      </header>
+      }
+      />
 
       <main className="w4-main">
-        <WidgetSearch zIndex={getSectionZIndex(Tabs.Search)} />
-        <WidgetNote noteNumber={noteNumber} note={note} zIndex={getSectionZIndex(Tabs.Note)} />
-        <WidgetMap note={note} zIndex={getSectionZIndex(Tabs.Map)} />
+        <div ref={WidgetSearchRef} className="w4-section w4-section--search">
+          <WidgetSearch setNoteTab={setTab} />
+        </div>
+        <div ref={WidgetNoteRef} className="w4-section w4-section--note" style={{zIndex: '2'}}>
+          <WidgetNote noteNumber={noteNumber} note={note} />
+        </div>
+        <div ref={WidgetMapRef} className="w4-section w4-section--map">
+          <WidgetMap note={note} setNoteTab={setTab} />
+        </div>
       </main>
-    </div>
+    </>
   )
 }
 

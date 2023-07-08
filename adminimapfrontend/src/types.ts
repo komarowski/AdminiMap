@@ -6,6 +6,12 @@ export interface ITag {
 
 // #region <DTO types>
 
+export interface IUserDTO {
+  name: string;
+  token: string;
+  accessLevel: number;
+}
+
 export interface ISuggestionDTO {
   number: string;
   title: string;
@@ -22,3 +28,10 @@ export interface INoteDTO {
   longitude: number;
 } 
 // #endregion  
+
+
+export interface IMapState {
+  zoom: number;
+  long: number;
+  lat: number;
+}

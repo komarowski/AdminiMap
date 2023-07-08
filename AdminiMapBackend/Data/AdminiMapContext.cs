@@ -12,5 +12,6 @@ namespace AdminiMapBackend.Data
         : base(options) { }
 
     public DbSet<Note> Notes => Set<Note>();
+    public DbSet<User> Users => Set<User>();
   }
 }

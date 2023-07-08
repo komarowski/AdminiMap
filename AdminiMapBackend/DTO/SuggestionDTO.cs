@@ -1,14 +1,14 @@
 ﻿namespace AdminiMapBackend.DTO
 {
   /// <summary>
-  /// DTO for list of note suggestions.
+  /// DTO for note suggestions.
   /// </summary>
   public class SuggestionDTO
   {
     /// <summary>Note number.</summary>
-    public string Number { get; set; }
+    public string Number { get; set; } = string.Empty;
 
     /// <summary>Note title.</summary>
-    public string Title { get; set; }
+    public string Title { get; set; } = string.Empty;
   }
 }

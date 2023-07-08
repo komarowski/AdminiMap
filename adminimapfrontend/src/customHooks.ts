@@ -5,16 +5,16 @@ import { useState, useEffect } from "react";
  * Hook for data fetching.
  * @param url api request.
  * @param initialState initial state.
- * @param isJson response is json (true) or text (false).
+ * @param isText response is text (true) or json (false).
  * @returns api response.
  */
-export function useFetch<T>(url: string | null, initialState: T, isJson: boolean): T {
+export function useFetch<T>(url: string | null, initialState: T, isText: boolean = false): T {
   const [result, setResult] = useState(initialState);
   useEffect(() => {
     let ignore = false;
     if (url){
       fetch(url)
-      .then(response => isJson ? response.json() : response.text())
+      .then(response => isText ? response.text() : response.json())
       .then(responseResult => {
         if (!ignore) {
           setResult(responseResult);
@@ -30,7 +30,6 @@ export function useFetch<T>(url: string | null, initialState: T, isJson: boolean
   }, [url]);
   return result;
 };
-
 
 /**
  * Hook to set a delay time until a user stops typing to change state.

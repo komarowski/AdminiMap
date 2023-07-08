@@ -6,13 +6,25 @@ import {
   Navigate  
 } from "react-router-dom";
 import HomePage from "./components/pages/home-page"
+import LoginPage from './components/pages/login-page';
+import AdminPage from './components/pages/admin-page';
 import "./assets/css/w4.css";
+import { Pages } from './constants';
+import { ProtectedLayout } from './components/layout/protected-layout';
 
 
 const router = createBrowserRouter([
   {
-    path: "/",
+    path: Pages.HOME,
     element: <HomePage />,
+  },
+  {
+    path: Pages.LOGIN,
+    element: <LoginPage />,
+  },
+  {
+    path: Pages.PROFILE,
+    element: <ProtectedLayout children={<AdminPage />} />,
   },
   {
     path: "*",

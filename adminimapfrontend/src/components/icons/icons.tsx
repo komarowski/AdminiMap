@@ -32,3 +32,52 @@ export const FilterIcon: JSX.Element =
       <path d="M21.35 42V30.75h3v4.15H42v3H24.35V42ZM6 37.9v-3h12.35v3Zm9.35-8.3v-4.1H6v-3h9.35v-4.2h3v11.3Zm6-4.1v-3H42v3Zm8.3-8.25V6h3v4.1H42v3h-9.35v4.15ZM6 13.1v-3h20.65v3Z" />
     </svg> 
   );
+
+export const FileOpenIcon: JSX.Element = 
+  (
+    <svg xmlns="http://www.w3.org/2000/svg" height="12" viewBox="0 -960 960 960" width="12">
+      <path fill="currentColor" d="M220-80q-24 0-42-18t-18-42v-680q0-24 18-42t42-18h340l240 240v270h-60v-230H520v-220H220v680h410v60H220Zm658 1L750-207v125h-60v-228h228v60H792l128 128-42 43Zm-658-61v-680 680Z"/>
+    </svg>
+  );
+
+export const FileDeleteIcon: JSX.Element = 
+  (
+    <svg xmlns="http://www.w3.org/2000/svg" height="12" viewBox="0 -960 960 960" width="12">
+      <path fill="currentColor" d="M261-120q-24.75 0-42.375-17.625T201-180v-570h-41v-60h188v-30h264v30h188v60h-41v570q0 24-18 42t-42 18H261Zm438-630H261v570h438v-570ZM367-266h60v-399h-60v399Zm166 0h60v-399h-60v399ZM261-750v570-570Z"/>
+    </svg>
+  );
+
+export const ImageDeleteIcon: JSX.Element = 
+  (
+    <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24">
+      <path fill="currentColor" d="M261-120q-24.75 0-42.375-17.625T201-180v-570h-41v-60h188v-30h264v30h188v60h-41v570q0 24-18 42t-42 18H261Zm438-630H261v570h438v-570ZM367-266h60v-399h-60v399Zm166 0h60v-399h-60v399ZM261-750v570-570Z"/>
+    </svg>
+  );
+
+export const FileSaveIcon: JSX.Element = 
+  (
+    <svg xmlns="http://www.w3.org/2000/svg" height="12" viewBox="0 -960 960 960" width="12">
+      <path fill="currentColor" d="M840-683v503q0 24-18 42t-42 18H180q-24 0-42-18t-18-42v-600q0-24 18-42t42-18h503l157 157Zm-60 27L656-780H180v600h600v-476ZM479.765-245Q523-245 553.5-275.265q30.5-30.264 30.5-73.5Q584-392 553.735-422.5q-30.264-30.5-73.5-30.5Q437-453 406.5-422.735q-30.5 30.264-30.5 73.5Q376-306 406.265-275.5q30.264 30.5 73.5 30.5ZM233-584h358v-143H233v143Zm-53-72v476-600 124Z"/>
+    </svg>
+  )
+
+export const FileAddIcon: JSX.Element = 
+  (
+    <svg width="12" height="12" viewBox="0 -960 960 960">
+      <path fill="currentColor" d="M450-200v-250H200v-60h250v-250h60v250h250v60H510v250h-60Z"/>
+    </svg>
+  );
+
+export const ImagesIcon: JSX.Element = 
+  (
+    <svg xmlns="http://www.w3.org/2000/svg" height="12" viewBox="0 -960 960 960" width="12">
+      <path fill="currentColor" d="M345-377h391L609-548 506-413l-68-87-93 123Zm-85 177q-24 0-42-18t-18-42v-560q0-24 18-42t42-18h560q24 0 42 18t18 42v560q0 24-18 42t-42 18H260Zm0-60h560v-560H260v560ZM140-80q-24 0-42-18t-18-42v-620h60v620h620v60H140Zm120-740v560-560Z"/>
+    </svg>
+  );
+
+export const UploadImagesIcon: JSX.Element = 
+  (
+    <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24">
+      <path fill="currentColor" d="M220-160q-24 0-42-18t-18-42v-143h60v143h520v-143h60v143q0 24-18 42t-42 18H220Zm230-153v-371L330-564l-43-43 193-193 193 193-43 43-120-120v371h-60Z"/>
+    </svg> 
+  );

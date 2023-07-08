@@ -23,9 +23,11 @@ namespace AdminiMapBackend.Data
       if (noteList.Count > 0)
       {
         context.Notes.AddRange(noteList);
-        context.SaveChanges();
+        FileService.CopyImages();
       }
-      FileService.CopyImages();
+
+      context.Users.Add(new User() { Name = "test", Password = "0000", AccessLevel = (int)AccessLevels.Admin });
+      context.SaveChanges();
     }
 
     /// <summary>

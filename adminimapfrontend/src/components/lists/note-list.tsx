@@ -9,11 +9,11 @@ interface IProps {
 
 const NoteList: React.FunctionComponent<IProps> = (props) => {
   return (
-    <div>
+    <>
       {props.searchResult.map(note => (
         <div key={note.id} className="w4-search-result" onClick={() => props.handleSuggestionClick(note.number)}>
           <div className="w4-flex">
-            <span className="w4-dot"></span>
+            <span className="w4-dot" />
             <h2>{note.title}</h2>
           </div>
           <div className="w4-search-result-container">
@@ -24,7 +24,7 @@ const NoteList: React.FunctionComponent<IProps> = (props) => {
           </div>
         </div>
       ))}
-    </div>
+    </>
   );
 }
 
