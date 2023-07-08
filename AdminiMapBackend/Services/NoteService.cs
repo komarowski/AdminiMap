@@ -43,7 +43,13 @@ namespace AdminiMapBackend.Services
         if (editNote is null)
           return null;
 
-        editNote = note;
+        editNote.Tags = note.Tags;
+        editNote.Title = note.Title;
+        editNote.Longitude = note.Longitude;
+        editNote.Latitude = note.Latitude;
+        editNote.LastUpdate = note.LastUpdate;
+        editNote.TagsString = note.TagsString;
+        editNote.UserName = note.UserName;
       }
       await context.SaveChangesAsync();
       return note;

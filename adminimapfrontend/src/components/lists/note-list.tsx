@@ -1,5 +1,6 @@
 import React from 'react';
 import { INoteDTO } from '../../types';
+import { getFormatDateString } from '../../utils';
 
 
 interface IProps {
@@ -19,7 +20,7 @@ const NoteList: React.FunctionComponent<IProps> = (props) => {
           <div className="w4-search-result-container">
             <div className="w4-flex">
               <div className="w4-search-result__user"> u/{note.userName} </div>
-              <div className="w4-search-result__date"> {new Date(note.lastUpdate).toLocaleDateString("en-US")} </div>
+              <div className="w4-search-result__date"> {getFormatDateString(note.lastUpdate)} </div>
             </div>
           </div>
         </div>

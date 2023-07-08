@@ -140,6 +140,11 @@ const AdminPage: React.FunctionComponent = () => {
     }
   }
 
+  const handleImageClick = async (image: string) => {
+    const imageTag = `\n\n<p><img src="images/${image}" alt="" title=""></p>`;
+    setNoteText(noteText + imageTag);
+  }
+
   return (
     <>
       <HeaderLayout />
@@ -276,7 +281,7 @@ const AdminPage: React.FunctionComponent = () => {
             {imageList.map(image => (
               <div key={image} className="w4-margin-bottom">
                 <div className='w4-flex-beetwen'>
-                  <div className="w4-flex">
+                  <div className="w4-flex w4-search-result" onClick={() => handleImageClick(image)}>
                     <span className="w4-dot" />
                     <div>images/{image}</div>
                   </div>

@@ -1,6 +1,7 @@
 import React from 'react';
 import { useFetch } from '../../customHooks';
 import { INoteDTO } from '../../types';
+import { getFormatDateString } from '../../utils';
 
 
 const IndexNote: JSX.Element = 
@@ -53,7 +54,7 @@ const Note: React.FunctionComponent<INoteProps> = (props) => {
       <div className="w4-container w4-theme-cyan">
         <div className="w4-flex-beetwen" style={{alignItems: "flex-start"}}>
           <h1>{props.note.title}</h1>
-          <div style={{margin: "5px 0"}}> {new Date(props.note.lastUpdate).toLocaleDateString("en-US")}</div>
+          <div style={{minWidth: '100px', margin: "5px 0"}}> {getFormatDateString(props.note.lastUpdate)}</div>
         </div>
         <div className="w4-flex-beetwen">
           <div className="w4-tag w4-theme w4-flex" style={{fontSize: "14px"}}>
