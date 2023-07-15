@@ -16,11 +16,18 @@ const IndexNote: JSX.Element =
         <a href="https://github.com/komarowski/AdminiMap">AdminiMap</a> is a travel blogging platform with an interactive map showing all the trips taken by users.
         </p>
         <p>
-          The map makes it easy to find all the destinations presented on the platform. You can also use <a href="/?tab=1">the search</a> by blog name or username.
+          The map makes it easy to find all the destinations presented on the platform. You can also use the search by note title or username.
         </p>
         <h2>How does it works?</h2>
         <p>
-          <a href="https://www.markdownguide.org/getting-started/">The Markdown</a> markup language is used for writing articles.
+          <a href="https://www.markdownguide.org/getting-started/">The Markdown</a> markup language is used for writing notes. These files contain all information about the note, including geolocation.
+        </p>
+        <p>
+          <a href="https://pigeon-maps.js.org/">Pigeon Maps</a> is used to display notes on the map.
+        </p>
+        <h2>About me</h2>
+        <p>
+          <a href="/komarowski/index.html">Here</a> you can find me.
         </p>
       </div>
     </>

@@ -1,6 +1,6 @@
 import React from 'react';
 import { useState } from 'react';
-import { Map, Marker, Overlay } from 'pigeon-maps'
+import { Map, Marker, Overlay, ZoomControl } from 'pigeon-maps'
 import { useFetch, useLocalStorage } from '../../customHooks';
 import { useSearchParams } from "react-router-dom";
 import { DEFAULTMAPSTATE, LocalStorageParams, Tabs, URLParams } from '../../constants';
@@ -102,6 +102,7 @@ const WidgetMap: React.FunctionComponent<IProps> = (props) => {
         handleBoundsChanged(center, zoom)
       }}
     >
+      <ZoomControl />
       {markers.map(marker => (
         <Marker
           key={marker.number}

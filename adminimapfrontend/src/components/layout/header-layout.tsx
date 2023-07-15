@@ -1,4 +1,4 @@
-import AdminiLogo from "../../assets/files/onmap.svg";
+import AdminiLogo from "../../assets/files/logo.svg";
 
 interface IProps {
   children?:  JSX.Element
