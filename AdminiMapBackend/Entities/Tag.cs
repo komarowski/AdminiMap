@@ -1,5 +1,8 @@
 ﻿namespace AdminiMapBackend.Entities
 {
+  /// <summary>
+  /// Entity for tag.
+  /// </summary>
   public class Tag
   {
     /// <summary>Tag number.</summary>

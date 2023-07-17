@@ -9,7 +9,7 @@ interface IProps {
 
 const SuggestionList: React.FunctionComponent<IProps> = (props) => {
   return (
-    <div>
+    <>
       {
         props.suggestionArray.length > 0 
         ? props.suggestionArray.map(suggestion => (
@@ -18,7 +18,7 @@ const SuggestionList: React.FunctionComponent<IProps> = (props) => {
         </div>))
         : <div className="w4-widget__head__filter__result">No results...</div>
       }
-    </div>
+    </>
   );
 }
 

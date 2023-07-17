@@ -23,9 +23,11 @@ namespace AdminiMapBackend.Data
       if (noteList.Count > 0)
       {
         context.Notes.AddRange(noteList);
-        context.SaveChanges();
+        FileService.CopyImages();
       }
-      FileService.CopyImages();
+
+      context.Users.Add(new User() { Name = "test", Password = "0000", AccessLevel = (int)AccessLevels.Admin });
+      context.SaveChanges();
     }
 
     /// <summary>
@@ -33,10 +35,10 @@ namespace AdminiMapBackend.Data
     /// </summary>
     public static readonly Tag[] Tags = 
       { 
-        new Tag() { Number = 1, Title = "Travel"},
-        new Tag() { Number = 2, Title = "Location"},
-        new Tag() { Number = 4, Title = "Sights"},
-        new Tag() { Number = 8, Title = "One day trip"},
+        new Tag() { Number = 1, Title = "mytravel"},
+        new Tag() { Number = 2, Title = "attractions"},
+        new Tag() { Number = 4, Title = "walkingplaces"},
+        new Tag() { Number = 8, Title = "forinstagram"},
       };
   }
 }
