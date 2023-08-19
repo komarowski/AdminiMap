@@ -10,8 +10,8 @@ namespace AdminiMapBackend.Entities
     [YamlMember(Alias = "title")]
     public string Title { get; set; }
 
-    [YamlMember(Alias = "username")]
-    public string UserName { get; set; }
+    [YamlMember(Alias = "usernumber")]
+    public string UserNumber { get; set; }
 
     [YamlMember(Alias = "tags")]
     public int Tags { get; set; }

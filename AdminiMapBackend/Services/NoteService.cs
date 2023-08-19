@@ -48,8 +48,8 @@ namespace AdminiMapBackend.Services
         editNote.Longitude = note.Longitude;
         editNote.Latitude = note.Latitude;
         editNote.LastUpdate = note.LastUpdate;
-        editNote.TagsString = note.TagsString;
-        editNote.UserName = note.UserName;
+        //editNote.TagsString = note.TagsString;
+        //editNote.UserName = note.UserName;
       }
       await context.SaveChangesAsync();
       return note;
@@ -95,9 +95,9 @@ namespace AdminiMapBackend.Services
     /// <param name="query">Search query.</param>
     /// <param name="tags">Tag sum.</param>
     /// <returns>Note array.</returns>
-    public async Task<Note[]> GetNotesAsync(string? query, int? tags)
+    public async Task<NoteDTO[]> GetNotesAsync(string? query, int? tags)
     {
-      IQueryable<Note> contextQuery = context.Notes.AsQueryable();
+      IQueryable<NoteDTO> contextQuery = GetJoinQuery();
       contextQuery = FilterByTags(contextQuery, tags);
 
       if (string.IsNullOrEmpty(query))
@@ -130,14 +130,14 @@ namespace AdminiMapBackend.Services
     /// <param name="lon">Map center longitude.</param>
     /// <param name="lat">Map center latitude.</param>
     /// <returns>Note array.</returns>
-    public async Task<Note[]> GetNotesAsync(string? query, int? tags, double? zoom, double? lon, double? lat)
+    public async Task<NoteDTO[]> GetNotesAsync(string? query, int? tags, double? zoom, double? lon, double? lat)
     {
       if (zoom is null || lon is null || lat is null)
       {
-        return Array.Empty<Note>();
+        return Array.Empty<NoteDTO>();
       }
 
-      IQueryable<Note> contextQuery = context.Notes.AsQueryable();
+      IQueryable<NoteDTO> contextQuery = GetJoinQuery();
       contextQuery = FilterByTags(contextQuery, tags);
 
       if (!string.IsNullOrEmpty(query))
@@ -174,13 +174,13 @@ namespace AdminiMapBackend.Services
       if (start.StartsWith("u/"))
       {
         var userNameStart = start[2..];
-        return await context.Notes
-        .Select(note => note.UserName)
-        .Distinct()
-        .Where(userName => userName.ToLower().StartsWith(userNameStart))
-        .Take(4)
-        .Select(userName => new SuggestionDTO() { Number = "u/" + userName, Title = "u/" + userName })
-        .ToArrayAsync();
+
+        return await context.Users
+          .Select(user => user.Name)
+          .Where(userName => userName.ToLower().StartsWith(userNameStart))
+          .Take(4)
+          .Select(userName => new SuggestionDTO() { Number = "u/" + userName, Title = "u/" + userName })
+          .ToArrayAsync();
       }
 
       return await context.Notes
@@ -196,7 +196,7 @@ namespace AdminiMapBackend.Services
     /// <param name="contextQuery">Database context query.</param>
     /// <param name="tagSum">Tag sum.</param>
     /// <returns>Filtered query.</returns>
-    private static IQueryable<Note> FilterByTags(IQueryable<Note> contextQuery, int? tagSum)
+    private static IQueryable<NoteDTO> FilterByTags(IQueryable<NoteDTO> contextQuery, int? tagSum)
     {
       if (tagSum is not null && tagSum > 0)
       {
@@ -212,7 +212,7 @@ namespace AdminiMapBackend.Services
     /// <param name="contextQuery">Database context query.</param>
     /// <param name="userNameStart">User name start.</param>
     /// <returns>Filtered query.</returns>
-    private static IQueryable<Note> FilterByUserName(IQueryable<Note> contextQuery, string userNameStart)
+    private IQueryable<NoteDTO> FilterByUserName(IQueryable<NoteDTO> contextQuery, string userNameStart)
     {
       var userName = userNameStart.ToLower()[2..];
       if (userName.Length > 0)
@@ -229,10 +229,34 @@ namespace AdminiMapBackend.Services
     /// <param name="contextQuery">Database context query.</param>
     /// <param name="title">Note title start.</param>
     /// <returns>Filtered query.</returns>
-    private static IQueryable<Note> FilterByTitle(IQueryable<Note> contextQuery, string title)
+    private static IQueryable<NoteDTO> FilterByTitle(IQueryable<NoteDTO> contextQuery, string title)
     {
       return contextQuery = contextQuery
         .Where(note => note.Title.ToLower().Contains(title)); ;
+    }
+
+    /// <summary>
+    /// Get tags string from tag sum.
+    /// </summary>
+    /// <param name="tagsSum">Tag sum.</param>
+    /// <returns>Tags string.</returns>
+    private string GetTagsString(int tagsSum)
+    {
+      var tags = this.context.Tags
+        .Where(tag => (tagsSum & tag.Number) == tag.Number)
+        .Select(tag => tag.Title)
+        .ToArray();
+
+      return string.Join(", ", tags);
+    }
+
+    private IQueryable<NoteDTO> GetJoinQuery()
+    {
+      return this.context.Notes
+        .Join(context.Users,
+        note => note.UserNumber,
+        user => user.Number,
+        (note, user) => new NoteDTO(note, user));
     }
   }
 }

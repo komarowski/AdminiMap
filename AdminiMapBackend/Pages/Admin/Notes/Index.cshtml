@@ -1,0 +1,49 @@
+﻿@page
+@model AdminiMapBackend.Pages.Admin.Notes.IndexModel
+
+@{
+  ViewData["Title"] = "Notes";
+}
+
+<div class="w3-white w3-round w3-margin-bottom w3-border">
+  <header class="w3-padding-large w3-large w3-border-bottom" style="font-weight: 500">Notes</header>
+  <p>
+    <a asp-page="Create">Create New</a>
+  </p>
+  <div class="w3-padding-large">
+    <div class="w3-responsive">
+      <table class="w3-table w3-bordered w3-center">
+        <thead>
+          <tr>
+            <th>Number</th>
+            <th>Title</th>
+            <th>Tags</th>
+            <th>UserNumber</th>
+            <th>Latitude</th>
+            <th>Longitude</th>
+            <th>LastUpdate</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+        @foreach (var item in Model.Note) {
+          <tr>
+            <td>@Html.DisplayFor(modelItem => item.Number)</td>
+            <td>@Html.DisplayFor(modelItem => item.Title)</td>
+            <td>@Html.DisplayFor(modelItem => item.Tags)</td>
+            <td>@Html.DisplayFor(modelItem => item.UserNumber)</td>
+            <td>@Html.DisplayFor(modelItem => item.Latitude)</td>
+            <td>@Html.DisplayFor(modelItem => item.Longitude)</td>
+            <td>@Html.DisplayFor(modelItem => item.LastUpdate)</td>
+            <td class="w3-center">
+                <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
+            </td>
+          </tr>
+        }
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+

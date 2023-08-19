@@ -1,4 +1,6 @@
-﻿namespace AdminiMapBackend.Entities
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace AdminiMapBackend.Entities
 {
   /// <summary>
   /// Note entity for database.
@@ -9,19 +11,19 @@
     public int Id { get; set; }
 
     /// <summary>Note number.</summary>
+    [MaxLength(4)]
     public string Number { get; set; }
 
     /// <summary>Note title.</summary>
+    [MaxLength(30)]
     public string Title { get; set; }
 
-    /// <summary>Note tags.</summary>
+    /// <summary>Sum of note tag numbers.</summary>
     public int Tags { get; set; }
 
-    /// <summary>Note tags string.</summary>
-    public string TagsString { get; set; }
-
-    /// <summary>Note author username.</summary>
-    public string UserName { get; set; }
+    /// <summary>User number.</summary>
+    [MaxLength(4)]
+    public string UserNumber { get; set; }
 
     /// <summary>The latitude of the place in the note.</summary>
     public double Latitude { get; set; }

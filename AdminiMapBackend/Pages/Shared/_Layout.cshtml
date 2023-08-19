@@ -1,0 +1,113 @@
+﻿﻿@{
+  var activeLinks = ViewData["Links"] as string[];
+  if (activeLinks is null)
+      activeLinks = new string[] { "", "", "", "", ""};
+
+  var scripts = ViewData["Scripts"] as string[];
+  var alert = ViewData["Alert"] as DTO.AlertDTO;
+  //var role = User.Claims.Last();
+  //var isAdmin = (!(role is null) && role.Value == "admin") ? true : false;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>@ViewData["Title"] - Admin Panel</title>
+  <link rel="stylesheet" href="~/admin-assets/icons/font-awesome-4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="~/admin-assets/css/w3pro-4.13.css">
+  <link rel="stylesheet" href="~/admin-assets/css/w3-theme.css">
+  <link rel="stylesheet" href="~/admin-assets/css/admin-styles.css">
+  <link rel="stylesheet" href="~/admin-assets/css/scrollbar.css">
+  <link rel="stylesheet" href="~/admin-assets/css/toggle-checkbox.css">
+</head>
+<body class="w3-light-grey">
+  <input id="sidebar-control" type="checkbox" class="w3-hide">
+  <div id="app">
+    <div class="w3-top w3-card" style="height:54px">
+      <div class="w3-flex-bar w3-theme w3-left-align">
+        <div class="admin-logo w3-bar-item w3-hide-medium w3-hide-small" style="min-width:190px">
+          <h5 class="" style="line-height:1; margin:0!important; font-weight:300">
+            <a asp-page="/Notes/Index" class="w3-button w3-bold">
+              <img src="~/admin-assets/admin-logo.svg" alt="adminimap-logo" class="w3-image" width="26"> &nbsp; AdminiMap
+            </a>
+          </h5>
+        </div>
+        <label for="sidebar-control" class="w3-button w3-large w3-opacity-min"><i class="fa fa-bars"></i></label>
+        <div class="w3-right">
+          <a asp-page="/Admin/Notes/Index" class="w3-button" title="Account">
+            <div class="w3-circle w3-center w3-text-white w3-primary" style="width:38px; height:38px">
+              <i class="fa fa-fw fa-user fa" style="margin-top:11px"></i>
+            </div>
+          </a>
+          <a asp-page="/Admin/Login" asp-route-action="signout" type="button" class="w3-button w3-large w3-opacity-min" style="padding: 8px 16px 8px 0px;" title="Sign out"><i class="fa fa-fw fa-sign-out"></i></a>
+        </div>
+      </div>
+    </div>
+    <nav id="sidebar" class="w3-sidebar w3-top w3-bottom w3-collapse w3-white w3-border-right w3-border-top scrollbar" style="z-index:3;width:230px;height:auto;margin-top:54px;border-color:rgba(0, 0, 0, .1)!important">
+      <div class="w3-bar-item w3-border-bottom w3-hide-large" style="padding:6px 0">
+        <label for="sidebar-control" class="w3-left w3-button w3-large w3-opacity-min" style="background:white!important"><i class="fa fa-bars"></i></label>
+        <h5 class="" style="line-height:1; margin:0!important; font-weight:300">
+          <a asp-page="/User/Home" class="w3-button" style="background:white!important">
+            <img src="~/admin-assets/admin-logo.svg" alt="adminimap-logo" class="w3-image" width="26"> &nbsp; AdminiMap
+          </a>
+        </h5>
+      </div>
+      <div class="w3-bar-block">
+        <br />
+        <a asp-page="/Admin/Notes/Index" class="w3-bar-item w3-button w3-padding-large w3-hover-text-primary @activeLinks[0]">
+          <i class="fa fa-fw fa-bar-chart"></i>&nbsp; Notes
+        </a>
+@*        @if (isAdmin)
+        {
+            <a asp-page="/User/Overlord/Files" class="w3-bar-item w3-button w3-padding-large w3-hover-text-primary @activeLinks[1]">
+                <i class="fa fa-fw fa-cloud"></i>&nbsp; File manager
+            </a>
+            <a asp-page="/User/Overlord/Users" class="w3-bar-item w3-button w3-padding-large w3-hover-text-primary @activeLinks[2]">
+                <i class="fa fa-fw fa-users"></i>&nbsp; Users
+            </a>
+            <a asp-page="/User/Overlord/Projects" class="w3-bar-item w3-button w3-padding-large w3-hover-text-primary @activeLinks[3]">
+                <i class="fa fa-fw fa-gears"></i>&nbsp; Projects
+            </a>
+            <a asp-page="/User/Overlord/Routes" class="w3-bar-item w3-button w3-padding-large w3-hover-text-primary @activeLinks[4]">
+                <i class="fa fa-fw fa-share-alt"></i>&nbsp; Routes
+            </a>
+        }*@
+
+        @*<a href="#" class="w3-bar-item w3-button w3-padding-large w3-hover-text-primary">
+    <i class="fa fa-fw fa-question-circle w3-text-info"></i>&nbsp; Information
+</a>*@
+      </div>
+    </nav>
+    <div class="w3-main" style="margin-top:54px">
+      <div class="main-container">
+          @RenderBody()
+      </div>
+
+      @if (alert is not null)
+      {
+        <div id="alert" class="w3-modal" style="display: block;">
+          <div class="w3-modal-content w3-animate-top w3-card-4 w3-round" style="max-width: 400px;">
+            <header class="w3-container @alert.Color">
+              <span onclick="document.getElementById('alert').style.display='none'" class="w3-button w3-xlarge w3-display-topright">×</span>
+              <h2>@alert.Title</h2>
+            </header>
+            <div class="w3-container">
+               <p>@alert.Text</p>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+
+  @if (scripts is not null)
+  {
+    foreach (var script in scripts)
+    {
+      <script src="~/admin-assets/plugins/@script"></script>
+    }
+  }
+</body>
+</html>

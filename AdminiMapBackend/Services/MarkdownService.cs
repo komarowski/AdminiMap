@@ -73,8 +73,7 @@ namespace AdminiMapBackend.Services
           Title = markdownFrontMatter.Title,
           Number = noteNumber,
           Tags = markdownFrontMatter.Tags,
-          TagsString = GetTagsString(markdownFrontMatter.Tags),
-          UserName = markdownFrontMatter.UserName,
+          UserNumber = markdownFrontMatter.UserNumber,
           Longitude = markdownFrontMatter.Longitude,
           Latitude = markdownFrontMatter.Latitude,
           LastUpdate = markdownFile.LastWriteTimeUtc
@@ -107,8 +106,7 @@ namespace AdminiMapBackend.Services
         Title = markdownFrontMatter.Title,
         Number = noteNumber,
         Tags = markdownFrontMatter.Tags,
-        TagsString = GetTagsString(markdownFrontMatter.Tags),
-        UserName = markdownFrontMatter.UserName,
+        UserNumber = markdownFrontMatter.UserNumber,
         Longitude = markdownFrontMatter.Longitude,
         Latitude = markdownFrontMatter.Latitude,
         LastUpdate = DateTime.UtcNow
@@ -120,21 +118,6 @@ namespace AdminiMapBackend.Services
       var sourcePath = FileService.GetMarkdownPath(noteNumber);
       File.WriteAllText(sourcePath, markdown, Encoding.UTF8);
       return note;
-    }
-
-    /// <summary>
-    /// Get tags string from tag sum.
-    /// </summary>
-    /// <param name="tagsSum">Tag sum.</param>
-    /// <returns>Tags string.</returns>
-    private static string GetTagsString(int tagsSum)
-    {
-      var tags = InitialData.Tags
-        .Where(tag => (tagsSum & tag.Number) == tag.Number)
-        .Select(tag => tag.Title)
-        .ToArray();
-
-      return string.Join(", ", tags);
     }
 
     /// <summary>

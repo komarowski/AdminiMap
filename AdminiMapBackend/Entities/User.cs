@@ -1,13 +1,15 @@
-﻿namespace AdminiMapBackend.Entities
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace AdminiMapBackend.Entities
 {
   /// <summary>
-  /// User access levels.
+  /// User roles.
   /// </summary>
-  public enum AccessLevels
+  public enum Roles
   {
-    /// <summary>User access level.</summary>
+    /// <summary>User role.</summary>
     User,
-    /// <summary>Admin access level.</summary>
+    /// <summary>Admin role.</summary>
     Admin
   }
 
@@ -19,19 +21,19 @@
     /// <summary>User Id.</summary>
     public int Id { get; set; }
 
+    /// <summary>User number.</summary>
+    [MaxLength(4)]
+    public string Number { get; set; }
+
+    [MaxLength(20)]
     /// <summary>User name.</summary>
     public string Name { get; set; }
 
+    [MaxLength(20)]
     /// <summary>User password.</summary>
     public string Password { get; set; }
 
-    /// <summary>Access level.</summary>
-    public int AccessLevel { get; set; }
-
-    /// <summary>Authentication token.</summary>
-    public string? Token { get; set; }
-
-    /// <summary>Token expiration time.</summary>
-    public DateTime ExpirationTime { get; set; }
+    /// <summary>User role.</summary>
+    public int Role { get; set; }
   }
 }

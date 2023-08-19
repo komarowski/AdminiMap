@@ -18,6 +18,7 @@ mono_crash.*
 
 #Database
 Database/
+Migrations/
 
 # Build results
 [Dd]ebug/
@@ -39,8 +40,8 @@ bld/
 .vs/
 # Uncomment if you have tasks that create the project's static files in wwwroot
 AdminiMapBackend/wwwroot/*
-!AdminiMapBackend/wwwroot/notfound.html
-
+!AdminiMapBackend/wwwroot/admin-assets
+!AdminiMapBackend/wwwroot/images
 
 # Visual Studio 2017 auto generated files
 Generated\ Files/
